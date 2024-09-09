@@ -12,7 +12,7 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'src/output.css' %}">
 </head>
-<body>
+<body class="flex flex-col min-h-screen">
   <nav class="bg-white border-b border-gray-200 dark:border-gray-600 drop-shadow-md">
     <div class="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto py-4 px-2 3xl:px-0">
       <a href="{% url 'Ranker:home' %}" class="flex items-center space-x-3 rtl:space-x-reverse">
@@ -97,9 +97,27 @@
       {% endfor %}
     </div>
   {% endif %}
-
-  {% block content %}
+    <main class="flex-grow">
+      {% block content %}
   {% endblock %}
+    </main>
+  
+
+  <footer class="bg-white dark:bg-gray-800 border border-top mt-auto" style="background-color: #f9fafb;">
+    <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between pb-12">
+      <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
+        © 2024 <a href="https://flowbite.com/" class="hover:underline">HBFH Enterprises, LLC</a>. All Rights Reserved.
+      </span>
+      <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
+          <li>
+              <a href="{% url 'Ranker:about_page' %}" class="hover:underline me-4 md:me-6">About</a>
+          </li>
+          <li>
+              <a href="{% url 'Ranker:about_page' %}#contact" class="hover:underline">Contact</a>
+          </li>
+      </ul>
+    </div>
+  </footer>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.jsdelivr.net/npm/flowbite@2.5.1/dist/flowbite.min.js"></script>
 </body>
