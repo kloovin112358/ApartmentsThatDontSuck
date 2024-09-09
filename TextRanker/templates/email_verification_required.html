@@ -1,0 +1,25 @@
+{% extends "main.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+  Email Verification Required
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    <div class="w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
+        <p class="text-lg font-semibold mb-4">Email verification is required before you can use your account.</p>
+        {% if sent_email %}
+        <p class="mb-4 text-gray-600">You should be receiving an email in your inbox shortly with a link to verify your account. Please allow 5 minutes for the email to be sent.</p>
+        <p class="text-gray-600 italic mb-4">Don't see the email?</p>
+        {% endif %}
+        <form method="post" class="flex flex-col">
+            {% csrf_token %}
+            <button type="submit" class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">
+                {% if sent_email %}Resend Email{% else %}Send Verification Email{% endif %}
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,305 @@
+{% extends "main.html" %}
+{% load static %}
+{% load custom_template_tags %}
+
+{% block title %}
+  Search for Apartments
+{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-3xl mx-auto">
+    <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-4 pb-24">
+        <div>
+        <div class="bg-white border border-gray-200 rounded-lg shadow p-6 ms-2 mx-2 lg:me-0 mt-3 flex-shrink">
+            <h2 class="text-xl font-semibold mb-4">Add Apartment to Database</h2>
+            <form>
+                {% csrf_token %}
+                 <!-- UnitType Field -->
+              <div class="mb-4">
+                <label for="unit-type" class="block text-sm font-medium text-gray-700">Unit Type</label>
+                <select required id="unit-type-dropdown" name="unit-type" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                  <!-- Add options dynamically from the UnitType model -->
+                  {% for unitType in unitTypes %}
+                    <option value="{{unitType.id}}">{{unitType.unitType}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+              <!-- Neighborhood Field -->
+              <div class="mb-4">
+                <label for="neighborhood" class="block text-sm font-medium text-gray-700">Neighborhood</label>
+                <select required id="neighborhood" name="neighborhood" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                  <!-- Add options dynamically from the Neighborhood model -->
+                  <option></option>
+                  {% for neighborhood in neighborhoods %}
+                    <option value="{{neighborhood.id}}">{{neighborhood.name}}</option>
+                  {% endfor %}
+                </select>
+              </div>
+      
+              <!-- Price Field -->
+              <div class="mb-4">
+                <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                <input required type="text" name="price" id="price" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+              </div>
+      
+              <!-- Quality Rating Field -->
+              <div class="mb-4">
+                <label for="quality-rating" class="block text-sm font-medium text-gray-700">Quality Rating</label>
+                <input type="range" id="quality-rating" name="quality-rating" min="1" max="10" value="5" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>1</span>
+                  <span>2</span>
+                  <span>3</span>
+                  <span>4</span>
+                  <span>5</span>
+                  <span>6</span>
+                  <span>7</span>
+                  <span>8</span>
+                  <span>9</span>
+                  <span>10</span>
+                </div>
+              </div>
+
+      
+              <!-- Link Field -->
+              <div class="mb-4">
+                <label for="link" class="block text-sm font-medium text-gray-700">Link</label>
+                <input required type="url" name="link" id="link" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+              </div>
+
+              <!-- Submit Button -->
+              <div class="text-right">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="col-span-3">
+            <div class="mx-2 lg:ms-0">
+                <div class="mb-2 border border-gray-200 rounded-lg shadow mt-3">
+                    <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
+                        {% for unitType in unitTypes %}
+                            <li class="me-2" role="presentation">
+                                <button
+                                    class="inline-block p-4 border-b-2 rounded-t-lg {% if forloop.first %}border-blue-500 text-blue-500{% else %}hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300{% endif %}"
+                                    id="tab-{{ forloop.counter }}"
+                                    data-tabs-target="#tab-content-{{ forloop.counter }}"
+                                    type="button"
+                                    role="tab"
+                                    aria-controls="tab-content-{{ forloop.counter }}"
+                                    aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                                    data-unit-type="{{ unitType.id }}"
+                                >
+                                    {{ unitType }}
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div id="default-tab-content">
+                    {% csrf_token %}
+                    {% for unitType in unitTypes %}
+                    <div class="{% if not forloop.first %}hidden{% endif %} shadow-md"
+                        id="tab-content-{{ forloop.counter }}"
+                        role="tabpanel"
+                        aria-labelledby="tab-{{ forloop.counter }}">
+                        {% if unitType.live_searches %}
+                        <div class="relative overflow-x-auto">
+                            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border border-gray-200 rounded-lg shadow">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Listing Site</th>
+                                        <th scope="col" class="px-6 py-3">Search Link</th>
+                                        <th scope="col" class="px-6 py-3">Stop At</th>
+                                        <th scope="col" class="px-6 py-3">Update</th>
+                                        <th scope="col" class="px-6 py-3">Last Updated</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for search in unitType.live_searches %}
+                                    <tr id="row-{{ search.id }}"  class="{% if search.last_updated|is_within_24_hours %}bg-green-100{% else %}bg-white{% endif %} border-b dark:bg-gray-800 dark:border-gray-700">
+                                        <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                                            {{ search.listing_site.site_name }}
+                                        </th>
+                                        <td class="px-6 py-4"   style="max-width:300px;word-wrap:break-word">
+                                            <a href="{{ search.search_url }}" class="font-medium text-xs text-blue-600 dark:text-blue-500 hover:underline">{{ search.search_url|truncatechars:250 }}</a>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <textarea id="stop-at-{{ search.id }}" data-initial-value="{{ search.last_item_note }}" rows="2" class="stop-at-textarea block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">{{ search.last_item_note }}</textarea>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <button type="button" class="update-button text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800" data-search-id="{{ search.id }}">Update</button>
+                                        </td>
+                                        <td class="px-6 py-4">{{ search.last_updated }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="p-4">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                Looks like there are no searches for {{unitType}}
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.querySelector('form');
+    form.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent default form submission
+
+        // Gather form data
+        const formData = new FormData(form);
+
+        // Create an AJAX request
+        fetch('{% url "Ranker:ajax_add_unit" %}', { // Update with your URL name
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Show success toast
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Submitted Successfully!',
+                    text: 'Your form has been submitted.',
+                });
+
+                // Reset form
+                form.reset();
+            } else {
+                // Show error toast
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Submission Failed',
+                    text: data.error || 'An error occurred.',
+                });
+            }
+        })
+        .catch(error => {
+            // Show error toast
+            Swal.fire({
+                icon: 'error',
+                title: 'Submission Failed',
+                text: 'An unexpected error occurred.',
+            });
+        });
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const tabs = document.querySelectorAll('[data-unit-type]');
+    const dropdown = document.getElementById('unit-type-dropdown');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            const unitTypeId = this.getAttribute('data-unit-type');
+            dropdown.value = unitTypeId;
+        });
+    });
+});
+document.addEventListener('DOMContentLoaded', function () {
+    const updateButtons = document.querySelectorAll('.update-button');
+
+    updateButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const searchId = this.getAttribute('data-search-id');
+            const textarea = document.getElementById(`stop-at-${searchId}`);
+            const newValue = textarea.value;
+            const initialValue = textarea.getAttribute('data-initial-value');
+
+            // Check if the value has changed
+            if (newValue !== initialValue) {
+                // Show confirmation modal
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You are about to mark this search as complete.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, update it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Send AJAX request to update the note
+                        fetch("{% url 'Ranker:ajax_update_stop_at' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]').value
+                            },
+                            body: JSON.stringify({
+                                'search_id': searchId,
+                                'last_item_note': newValue
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Updated Successfully!',
+                                    text: 'The search has been updated.',
+                                });
+
+                                // Update the initial value with the new value
+                                textarea.setAttribute('data-initial-value', newValue);
+
+                                // Optionally update the 'Last Updated' column
+                                const lastUpdatedCell = button.closest('tr').querySelector('td:last-child');
+                                lastUpdatedCell.textContent = data.last_updated;
+
+                                // Change background color of the row
+                                const row = button.closest('tr'); // Get the closest row
+                                if (row) {
+                                    row.classList.remove('bg-white'); // Remove any existing background color
+                                    row.classList.add('bg-green-100'); // Add the class for green background
+                                }
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Update Failed',
+                                    text: data.error || 'An error occurred.',
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Update Failed',
+                                text: 'An unexpected error occurred.',
+                            });
+                        });
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'No Changes Detected',
+                    text: 'The "Stop At" value has not changed.',
+                });
+            }
+        });
+    });
+});
+
+
+</script>
+
+{% endblock %}

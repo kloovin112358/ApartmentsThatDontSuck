@@ -1,0 +1,151 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block title %}
+  Reported Units
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+    {% if units %}
+        <h1 class="text-2xl font-bold mb-4">Reported Units</h1>
+        {% for unit in units %}
+            <div class="flex mb-4">
+                <div class="flex flex-col">
+                    <!-- Display counters for the number of reports -->
+                    <div class="border rounded-lg {% if unit.open_not_available_reports_count > 0 %}bg-red-50 text-red-800{% else %}bg-white{% endif %} shadow-md dark:bg-gray-800 dark:border-gray-700 me-3 py-2 px-4 mb-1 text-center ">
+                        <span class="text-4xl font-bold">{{ unit.open_not_available_reports_count }}</span>
+                        <br>N/A
+                    </div>
+                    <div class="border rounded-lg {% if unit.open_sucks_reports_count > 0 %}bg-red-50 text-red-800{% else %}bg-white{% endif %} shadow-md dark:bg-gray-800 dark:border-gray-700 me-3 py-2 px-4 text-center">
+                        <span class="text-4xl font-bold">{{ unit.open_sucks_reports_count }}</span>
+                        <br>Sucks
+                    </div>
+                </div>
+                <div class="flex-grow">
+                    <div class="border rounded-lg p-4 bg-white shadow-md dark:bg-gray-800 dark:border-gray-700">
+                        
+
+                        <p class="text-xl font-semibold mb-4">
+                            
+                            <a href="{{ unit.listing_link }}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
+                                {{ unit.listing_link }}
+                            </a>
+                            <a type="button" class="ms-2 text-gray-900 hover:text-white border border-gray-800 hover:bg-gray-900 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg px-3 py-2 text-xs text-center me-2 mb-2 dark:border-gray-600 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-600 dark:focus:ring-gray-800" 
+                            href="{% url 'admin:TextRanker_unit_change' unit.id %}">Edit</a>
+                        </p>
+                        
+                    
+                        <div class="mb-4">
+                            <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3">Type</th>
+                                        <th scope="col" class="px-6 py-3">Comment</th>
+                                        <th scope="col" class="px-6 py-3">Submitted By</th>
+                                        <th scope="col" class="px-6 py-3">Date/Time Submitted</th>
+                                        <th scope="col" class="px-6 py-3">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for report in unit.open_not_available_reports %}
+                                        <tr class="border-b dark:border-gray-700">
+                                            <td class="px-6 py-4">Not Available</td>
+                                            <td class="px-6 py-4"></td>
+                                            <td class="px-6 py-4">{{ report.user.email }}</td>
+                                            <td class="px-6 py-4">{{ report.datetime_submitted|date:"F j, Y, g:i a" }}</td>
+                                            <td class="px-4 py-2 text-sm">
+                                                <button class="px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" data-report-id="{{ report.id }}" data-report-type="not_available">Dismiss</button>
+                                                <button class="px-3 py-2 text-xs font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-report-id="{{ report.id }}" data-report-type="not_available">Accept</button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                    {% for report in unit.open_sucks_reports %}
+                                        <tr class="border-b dark:border-gray-700">
+                                            <td class="px-6 py-4">Unit Sucks</td>
+                                            <td class="px-6 py-4">{{ report.description }}</td>
+                                            <td class="px-6 py-4">{{ report.user.email }}</td>
+                                            <td class="px-6 py-4">{{ report.datetime_submitted|date:"F j, Y, g:i a" }}</td>
+                                            <td class="px-4 py-2 text-sm">
+                                                <button class="px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800" data-report-id="{{ report.id }}" data-report-type="sucks">Dismiss</button>
+                                                <button class="px-3 py-2 text-xs font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800" data-report-id="{{ report.id }}" data-report-type="sucks">Accept</button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+    <div class="flex flex-col items-center justify-center pt-4 md:pt-20">
+        <img src="{% static 'undraw_among_nature.svg' %}" class="w-96" />
+        <h1 class="flex items-center text-2xl font-bold text-purple-800 mt-6">No reports found. Have a great day!</h1>
+    </div>
+    {% endif %}
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('button[data-report-id]').forEach(button => {
+        button.addEventListener('click', function () {
+            const reportId = this.getAttribute('data-report-id');
+            const reportType = this.getAttribute('data-report-type');
+            const action = this.textContent.trim().toLowerCase();
+
+            Swal.fire({
+                title: `Are you sure you want to ${action} this report?`,
+                text: `You are about to ${action} this ${reportType === 'sucks' ? 'Unit Sucks Report' : 'Not Available Report'}.`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: action === 'accept' ? '#3085d6' : '#d33',
+                confirmButtonText: `Yes, ${action} it!`
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch("{% url 'Ranker:update_report_status' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: new URLSearchParams({
+                            'report_id': reportId,
+                            'action': action,
+                            'report_type': reportType
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Updated Successfully!',
+                                text: `The report has been updated with the following action: ${action}.`,
+                            }).then(() => {
+                                location.reload(); // Reload the page to reflect the changes
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Update Failed',
+                                text: data.error || 'An error occurred.',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Update Failed',
+                            text: 'An unexpected error occurred.',
+                        });
+                    });
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

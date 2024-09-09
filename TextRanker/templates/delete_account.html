@@ -1,0 +1,77 @@
+{% extends "main.html" %}
+
+{% block title %}Delete Account{% endblock %}
+
+{% block content %}
+<div class="max-w-screen-sm mx-auto p-4">
+    <div class="p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
+        <h5 class="text-2xl font-medium text-gray-900 mb-6">Delete Your Account</h5>
+        <p class="text-gray-700 mb-4">Are you sure you want to delete your account? This action cannot be undone.</p>
+        <!-- Delete Button Triggering Modal -->
+        <button type="button"
+            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+            onclick="openDeleteModal()">
+            Delete Account
+        </button>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div id="deleteAccountModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto absolute top-16">
+        <h3 class="text-lg font-semibold mb-4">Confirm Account Deletion</h3>
+        <p class="mb-4">Please type your email address <strong>{{ user.email }}</strong> to confirm account deletion.</p>
+        <input type="text" id="confirmEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Type your email" />
+        <div class="flex justify-between">
+            <button id="cancelDelete" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Cancel</button>
+            <form id="confirmDeleteForm" method="post" action="{% url 'Ranker:delete_account' %}">
+                {% csrf_token %}
+                <button id="confirmDelete" type="submit" class="px-4 py-2 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 bg-gray-300 cursor-not-allowed"
+                        disabled>
+                    Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openDeleteModal() {
+    // Show the modal
+    document.getElementById('deleteAccountModal').classList.remove('hidden');
+
+    // Get references to the input field and buttons
+    const confirmEmailInput = document.getElementById('confirmEmail');
+    const confirmDeleteButton = document.getElementById('confirmDelete');
+    const confirmDeleteForm = document.getElementById('confirmDeleteForm');
+
+    // Function to enable or disable the confirm button based on email match
+    confirmEmailInput.addEventListener('input', () => {
+        if (confirmEmailInput.value === '{{ user.email }}') {
+            confirmDeleteButton.classList.remove('bg-gray-300', 'cursor-not-allowed');
+            confirmDeleteButton.classList.add('bg-red-600', 'hover:bg-red-700');
+            confirmDeleteButton.removeAttribute('disabled');
+        } else {
+            confirmDeleteButton.classList.remove('bg-red-600', 'hover:bg-red-700');
+            confirmDeleteButton.classList.add('bg-gray-300', 'cursor-not-allowed');
+            confirmDeleteButton.setAttribute('disabled', 'true');
+        }
+    });
+
+    // Handle the cancel button
+    document.getElementById('cancelDelete').addEventListener('click', () => {
+        document.getElementById('deleteAccountModal').classList.add('hidden');
+    });
+
+    // Handle the form submission
+    confirmDeleteForm.addEventListener('submit', (event) => {
+        if (confirmEmailInput.value !== '{{ user.email }}') {
+            event.preventDefault(); // Prevent form submission
+            alert('Email address does not match. Please type your email to confirm.');
+        }
+    });
+}
+</script>
+{% endblock %}
+
+

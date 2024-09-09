@@ -1,0 +1,192 @@
+{% extends "main.html" %}
+{% load static %}
+
+{% block title %}
+  About ATDS
+{% endblock %}
+
+{% block content %}
+<section class="bg-center bg-no-repeat bg-[url('/static/chicago_jumbotron.jpg')] bg-gray-700 bg-blend-multiply">
+  <div class="px-4 mx-auto max-w-screen-2xl text-center py-24 lg:py-56">
+      <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl px-4 lg:px-36">Chicago apartment shopping sucks.</h1>
+      <p class="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">And frankly, we're sick of dealing with it.</p>
+  </div>
+</section>
+<div class="max-w-screen-xl mx-auto py-5 lg:py-40">
+  <!-- First Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 items-center">
+    <div class="flex justify-center items-center px-16 lg:px-8">
+      <img src="{% static 'undraw_best_place.svg' %}" class="max-h-full max-w-full" />
+    </div>
+    <div class="col-span-3 px-8 lg:px-24 py-5 lg:py-0">
+      <h5 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Most apartment listings you see are trash.</h5>
+      <p class="mb-3 text-gray-700 dark:text-gray-400 text-base lg:text-lg">In any given search on your favorite apartment listing website, you're likely to find 10% ads, 20% overpriced luxury apartments, 40% listings without actual photos or complete information, 25% good apartments that are too expensive, and 5% apartments you'd actually like to tour. Having someone sort out the noise would be helpful, right?</p>
+    </div>
+  </div>
+
+  <!-- Second Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 items-center mt-4 lg:mt-32">
+    <div class="col-span-3 px-8 lg:px-24 py-5 lg:py-0">
+      <h5 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">There are just too many apartment listings out there.</h5>
+      <p class="mb-3 text-gray-700 dark:text-gray-400 text-base lg:text-lg">On a given search on a popular apartment listing website for 1-bedroom apartments in Chicago, there were 8,840 results. How does anyone have time to sort through all those?</p>
+    </div>
+    <div class="flex justify-center items-center px-16 lg:px-8 order-first lg:order-last">
+      <img src="{% static 'undraw_city_girl.svg' %}" class="max-h-full max-w-full" />
+    </div>
+  </div>
+
+  <!-- Third Section -->
+  <div class="grid grid-cols-1 lg:grid-cols-4 items-center mt-4 lg:mt-32">
+    <div class="flex justify-center items-center px-16 lg:px-8">
+      <img src="{% static 'undraw_my_current_location.svg' %}" class="max-h-full max-w-full" />
+    </div>
+    <div class="col-span-3 px-8 lg:px-24 py-5 lg:py-0">
+      <h5 class="mb-2 text-3xl font-bold tracking-tight text-gray-900 dark:text-white">If you're moving to a new area, you don't know what's trash and what's treasure.</h5>
+      <p class="mb-3 text-gray-700 dark:text-gray-400 text-base lg:text-lg">Without doing a great deal of research on neighborhoods, pricing, and apartment types, it can be difficult to know what a good apartment looks like, if you're new.</p>
+    </div>
+  </div>
+</div>
+
+
+<div class="bg-purple-700">
+  <div class="max-w-screen-xl py-10 lg:py-16 mx-auto">
+    <h2 class="mb-8 lg:mb-16 text-4xl font-bold tracking-tight text-white text-center px-2">
+      Here's how we're fixing the problem:
+    </h2>
+    <div class="flex flex-wrap justify-center mx-2">
+      <!-- Card 1 -->
+      <div class="bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 m-2 w-96">
+        <div class="p-5">
+          <div style="height:18em" class="flex items-center justify-center">
+            <img src="{% static 'undraw_web_search.svg' %}" alt="Web Search Illustration" class="w-full h-auto mx-auto p-5" />
+          </div>
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">We search for Chicago's best units</h5>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Our apartment hunters spend hours every day scouring the web for apartment listings that don't suck.</p>
+        </div>
+      </div>
+      
+      <!-- Card 2 -->
+      <div class="bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 m-2 w-96">
+        <div class="p-5">
+          <div style="height:18em" class="flex items-center justify-center">
+            <img src="{% static 'undraw_post.svg' %}" alt="Post on Internet Illustration" class="w-full h-auto mx-auto p-5" />
+          </div>
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">We link them here</h5>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">We post what we find on this site, rating each unit on its quality and value for the dollar.</p>
+        </div>
+      </div>
+      
+      <!-- Card 3 -->
+      <div class="bg-white border border-gray-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700 m-2 w-96">
+        <div class="p-5">
+          <div style="height:18em" class="flex items-center justify-center">
+            <img src="{% static 'undraw_relaxing_at_home.svg' %}" alt="Relaxing at Home Illustration" class="w-full h-auto mx-auto p-5" />
+          </div>
+          <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">You can browse Chicago's best apartments from this site</h5>
+          <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Using our handpicked units, you can relax easy and know you're seeing the best that Chicago has to offer.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="custom-shape-divider-top-1724882860">
+  <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+    <path class="fill-current text-purple-500" d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" class="shape-fill"></path>
+    <path class="fill-current text-purple-500" d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" class="shape-fill"></path>
+    <path class="fill-current text-purple-500" d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" class="shape-fill"></path>
+  </svg>
+</div>
+<div class="max-w-screen-md mx-auto py-10 lg:py-20 px-8">
+  <div class="bg-white border border-gray-200 rounded-lg shadow-lg p-8 lg:p-16">
+      <img src="{% static 'undraw_savings.svg' %}" alt="Savings Illustration" class="w-full h-auto mb-8 rounded-t-lg" style="max-height:20rem">
+      <h5 class="mb-4 pt-3 text-2xl font-bold tracking-tight text-gray-900">Now, we know what you're wondering. How do we make <span class="text-green-800">money</span>?</h5>
+      <p class="mb-6 text-gray-700">
+          Users can sign up for our Premium service, which notifies you via email as soon as one of our apartment hunters adds a good find to our site. And, Premium users get access to apartment listings 1 day earlier than the general public.
+      </p>
+      <a href="#" class="inline-block px-6 py-2 text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-200">
+          Sign Up for Premium
+      </a>
+  </div>
+</div>
+<div class=" max-w-screen-xl mx-auto my-4 lg:my-12">
+  <hr class="border-gray-300 mx-2">
+</div>
+
+<div class="max-w-screen-xl mx-auto py-10 lg:pt-20 pb-24 lg:pb-48 px-8">
+  <div class="flex flex-col md:flex-row items-top">
+      <!-- Mailbox Illustration -->
+      <div class="hidden md:block md:w-1/3 px-4 lg:px-16">
+          <img src="{% static 'undraw_opened.svg' %}" alt="Email Illustration" class="w-full h-auto mb-8 rounded-t-lg">
+      </div>
+      
+      <!-- Contact Form -->
+      <div class="md:w-2/3 px-4 md:px-16">
+          <h5 class="mb-6 text-3xl font-bold tracking-tight text-gray-900">Contact Us</h5>
+          <form id="contact-form" class="">
+              
+              <div class="mb-6">
+                  <label for="email" class="block mb-2 text-sm font-medium text-gray-700">Email</label>
+                  <input type="email" id="email" name="email" {% if request.user.is_authenticated %}value="{{ request.user.email }}"{% endif %}
+                         class="block w-full p-3 text-gray-700 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" required placeholder="apartmenthunter@gmail.com">
+              </div>
+
+              <div class="mb-6">
+                  <label for="message" class="block mb-2 text-sm font-medium text-gray-700">Message</label>
+                  <textarea id="message" name="message" rows="5" required
+                            class="block w-full p-3 text-gray-700 border border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500" placeholder="Your feedback, question, or concern."></textarea>
+              </div>
+              <button type="submit" class="inline-block px-6 py-2 text-center text-white bg-purple-600 rounded-lg hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 transition duration-200">
+                  Send Message
+              </button>
+          </form>
+      </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contact-form');
+    
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const formData = new FormData(form);
+
+        fetch("{% url 'Ranker:ajax_contact_form' %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Message Sent',
+                    text: 'Your message has been sent successfully.',
+                });
+                form.reset(); // Reset form after submission
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'An error occurred. Please try again.',
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'There was an error sending your message. Please try again.',
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

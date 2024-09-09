@@ -1,0 +1,9 @@
+{% autoescape off %}
+  To verify your Apartments That Don't Suck account,
+  click the link below:
+
+  {{ protocol }}://{{ domain }}{% url 'Ranker:click_email_verify_link' emailVerificationInst.id %}
+
+  If clicking the link above doesn't work, please copy and paste the URL in a new browser
+  window instead.
+{% endautoescape %}

@@ -1,0 +1,784 @@
+{% extends "main.html" %}
+{% load static %}
+{% load custom_template_tags %}
+{% load humanize %}
+
+{% block title %}
+  Apartments That Don't Suck (ATDS)
+{% endblock %}
+
+{% block content %}
+{% if units %}
+<!-- Spinner Container -->
+<div role="status" id="spinner" class="container mx-auto mt-4 hidden">
+    <div class="flex justify-center align-center">
+        <svg aria-hidden="true" class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-purple-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+        </svg>
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<div class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
+    <div class="px-2 py-6">
+        {% if request.user.is_authenticated %}
+        <div class="max-w-md flex items-center space-x-2 mb-3">
+            <label for="rowAction" class="block text-sm font-medium text-gray-900 dark:text-white">
+                Unit action
+            </label>
+            <select id="rowAction" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-1.5">
+                <option value="">----------</option>
+                {% if request.user.verified_account == True %}
+                <option value="Save">Save/Unsave Unit</option>
+                <option value="Sucks">Report that Apartment Sucks</option>
+                <option value="NA">Report Apartment as Not Available</option>
+                {% endif %}
+                {% if request.user.is_staff == True %}
+                <option value="Edit">Edit</option>
+                <option value="Delete">Delete</option>
+                {% endif %}
+            </select>
+            <button type="button" id="submitActionBtn" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                Go
+            </button>
+        </div>
+        
+        {% else %}
+        <div class="mb-4">
+            <a href="{% url 'Ranker:sign_up' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Sign up</a> or <a href="{% url 'Ranker:login_page' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">log in</a> to save and report listings.
+        </div>
+        
+        {% endif %}
+        <table id="filter-table">
+            <thead>
+                <tr>
+                    {% if request.user.is_authenticated %}
+                    <th>
+                        <span class="flex items-center">
+                            Select
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Account Action
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    {% endif %}
+                    <th>
+                        <span class="flex items-center">
+                            Added to ATDS
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Unit Type
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Neighborhood
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Price/Mo
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Quality
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Value
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                    <th>
+                        <span class="flex items-center">
+                            Link
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for unit in units %}
+                <tr data-unit-row="{{unit.id}}">
+                    {% if request.user.is_authenticated %}
+                    <td class="font-bold">
+                        <input 
+                            type="radio" 
+                            data-unit-id="{{unit.id}}" 
+                            id="select-radio-{{forloop.counter}}" 
+                            value="" 
+                            name="select-radio" 
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                            data-is-saved="{% if unit.is_saved %}true{% else %}false{% endif %}"
+                            data-is-reported-na="{% if unit.is_not_available_reported %}true{% else %}false{% endif %}"
+                            data-is-reported-sucks="{% if unit.is_sucks_reported %}true{% else %}false{% endif %}"
+                        >
+                    </td>
+                    <td class="badgeTD">
+                        {% if unit.is_saved %}
+                            <div>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Saved</span>
+                            </div>
+                        {% endif %}
+                        {% if unit.is_sucks_reported %}
+                            <div>
+                                <span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Reported (Sucks)</span>
+                            </div>
+                        {% endif %}
+                        {% if unit.is_not_available_reported %}
+                            <div>
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Reported (Not Avail.)</span>
+                            </div>
+                        {% endif %}
+                    </td>
+                    {% endif %}
+                    <td class="font-bold">{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
+                    <td class="font-bold">{{unit.unitType}}</td>
+                    <td class="font-bold">{{unit.neighborhood}}</td>
+                    <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
+                    <td class="
+                        {% if unit.quality_rating == 1 %}
+                            bg-red-300 text-red-700
+                        {% elif unit.quality_rating == 2 %}
+                            bg-red-200 text-red-700
+                        {% elif unit.quality_rating == 3 %}
+                            bg-red-100 text-red-700
+                        {% elif unit.quality_rating == 4 %}
+                            bg-red-50 text-red-700
+                        {% elif unit.quality_rating == 5 %}
+                            bg-coolGray-50 text-black
+                        {% elif unit.quality_rating == 6 %}
+                            bg-green-50 text-green-700
+                        {% elif unit.quality_rating == 7 %}
+                            bg-green-100 text-green-700
+                        {% elif unit.quality_rating == 8 %}
+                            bg-green-200 text-green-700
+                        {% elif unit.quality_rating == 9 %}
+                            bg-green-300 text-green-700
+                        {% elif unit.quality_rating == 10 %}
+                            bg-green-400 text-white
+                        {% else %}
+                            bg-white text-black
+                        {% endif %}
+                        font-bold
+                    ">
+                        {{ unit.quality_rating }}/10
+                    </td>
+                    <td class="
+                        {% if unit.value_rating == 1 %}
+                            bg-red-300 text-red-700
+                        {% elif unit.value_rating == 2 %}
+                            bg-red-200 text-red-700
+                        {% elif unit.value_rating == 3 %}
+                            bg-red-100 text-red-700
+                        {% elif unit.value_rating == 4 %}
+                            bg-red-50 text-red-700
+                        {% elif unit.value_rating == 5 %}
+                            bg-coolGray-50 text-black
+                        {% elif unit.value_rating == 6 %}
+                            bg-green-50 text-green-700
+                        {% elif unit.value_rating == 7 %}
+                            bg-green-100 text-green-700
+                        {% elif unit.value_rating == 8 %}
+                            bg-green-200 text-green-700
+                        {% elif unit.value_rating == 9 %}
+                            bg-green-300 text-green-700
+                        {% elif unit.value_rating == 10 %}
+                            bg-green-400 text-white
+                        {% else %}
+                            bg-white text-black
+                        {% endif %}
+                        font-bold
+                    ">
+                        {{ unit.value_rating }}/10
+                    </td>
+                    <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{unit.listing_link}}</a></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% if request.user.is_staff %}
+<!-- Edit Modal -->
+<div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
+        <h2 class="text-xl font-semibold mb-4">Edit Unit</h2>
+        <form id="editForm">
+            <input type="hidden" id="unitId" name="unitId">
+
+            <!-- Status -->
+            <div class="mb-4">
+                <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                <select id="status" name="status" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+                    {% for status in unit_statuses %}
+                    <option value="{{status.value}}">{{status.label}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Neighborhood -->
+            <div class="mb-4">
+                <label for="neighborhood" class="block text-sm font-medium text-gray-700">Neighborhood</label>
+                <select id="neighborhood" name="neighborhood" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+                    {% for neighborhood in neighborhoods %}
+                    <option value="{{neighborhood.id}}">{{neighborhood.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Unit Type -->
+            <div class="mb-4">
+                <label for="unitType" class="block text-sm font-medium text-gray-700">Unit Type</label>
+                <select id="unitType" name="unitType" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+                    {% for unit_type in unit_types %}
+                    <option value="{{unit_type.id}}">{{unit_type.unitType}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Listing Link -->
+            <div class="mb-4">
+                <label for="listingLink" class="block text-sm font-medium text-gray-700">Listing Link</label>
+                <input type="url" id="listingLink" name="listing_link" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <!-- Price -->
+            <div class="mb-4">
+                <label for="price" class="block text-sm font-medium text-gray-700">Price</label>
+                <input type="number" id="price" name="price" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <!-- Quality Rating -->
+            <div class="mb-4">
+                <label for="qualityRating" class="block text-sm font-medium text-gray-700">Quality Rating</label>
+                <input type="number" id="qualityRating" name="quality_rating" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label for="note" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Note</label>
+                <textarea id="note" name="note" rows="3" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Any notes will appear here"></textarea>
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-end">
+                <button type="button" id="cancelButton" class="bg-gray-500 text-white px-4 py-2 rounded-md mr-2">Cancel</button>
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
+<script>
+let selectedRadioId = null;
+
+// Function to store selected radio ID
+function storeSelectedRadio() {
+    const selectedRadio = document.querySelector('input[name="select-radio"]:checked');
+    if (selectedRadio) {
+        selectedRadioId = selectedRadio.id;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const spinner = document.getElementById("spinner");
+    if (document.getElementById("filter-table") && typeof simpleDatatables.DataTable !== 'undefined') {
+        const dataTable = new simpleDatatables.DataTable("#filter-table", {
+            tableRender: (_data, table, type) => {
+                if (type === "print") {
+                    return table;
+                }
+
+                const tHead = table.childNodes[0];
+                const filterHeaders = {
+                    nodeName: "TR",
+                    attributes: {
+                        class: "search-filtering-row"
+                    },
+                    childNodes: tHead.childNodes[0].childNodes.map((_th, index) => ({
+                        nodeName: "TH",
+                        attributes: {
+                            class: "px-2 py-1 text-xs", // Add classes for smaller padding and text size
+                        },
+                        childNodes: [
+                            {
+                                nodeName: "INPUT",
+                                attributes: {
+                                    class: "datatable-input w-full text-xs px-1 py-0.5", // Smaller input size
+                                    type: "search",
+                                    "data-columns": "[" + index + "]"
+                                }
+                            }
+                        ]
+                    }))
+                };
+                tHead.childNodes.push(filterHeaders);
+                return table;
+            }
+        });
+        // Hide the spinner once the DataTable is initialized
+        dataTable.on("datatable.init", () => {
+            spinner.classList.add('hidden');
+            document.getElementById("pageContentContainer").classList.remove('hidden');
+        });
+        dataTable.on('datatable.pager', storeSelectedRadio);
+        dataTable.on('datatable.sort', storeSelectedRadio);
+        dataTable.on('datatable.search', storeSelectedRadio);
+        dataTable.on('datatable.update', () => {
+            if (selectedRadioId) {
+                const radioToSelect = document.getElementById(selectedRadioId);
+                if (radioToSelect) {
+                    radioToSelect.checked = true;
+                }
+            }
+        });
+    }
+})
+</script>
+
+{% if request.user.is_authenticated and request.user.verified_account == True %}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var unitId = null
+    var radioCheckedButton = null
+    var badgeTD = null
+    // Attach event listener to the button
+    document.getElementById('submitActionBtn').addEventListener('click', function () {
+        // Get the select element and its value
+        const selectElement = document.getElementById('rowAction');
+        const selectedValue = selectElement.value;
+
+        // Get all radio buttons
+        const radioButtons = document.querySelectorAll('input[name="select-radio"]');
+        radioCheckedButton = Array.from(radioButtons).find(radio => radio.checked);
+
+        // Check if select value is empty or no radio button is checked
+        if (selectedValue === "") {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error performing action',
+                text: 'Please select a value from the "action" dropdown.',
+            });
+            return;
+        }
+
+        if (!radioCheckedButton) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error performing action',
+                text: 'Please select at least one unit for your action (use the radio buttons in the left-hand column).',
+            });
+            return;
+        }
+
+        unitId = radioCheckedButton.getAttribute('data-unit-id')
+        badgeTD = radioCheckedButton.closest('tr').querySelector('td.badgeTD')
+
+        // Perform actions based on the value of the select element
+        switch (selectedValue) {
+            case 'Save':
+                performSaveUnsaveAction();
+                break;
+            case 'Sucks':
+                performSucksAction();
+                break;
+            case 'NA':
+                performNAAction();
+                break;
+            case 'Edit':
+                performEditAction();
+                break;
+            case 'Delete':
+                performDeleteAction();
+                break;
+            default:
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error performing action',
+                    text: 'An unexpected error occurred.',
+                });
+                break;
+        }
+    });
+
+    // Define the action functions
+    function performSaveUnsaveAction() {
+        // check if already saved
+        if (radioCheckedButton.getAttribute('data-is-saved') === 'false') {
+            // Event listener for saving units
+            fetch("{% url 'Ranker:ajax_save_unit' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 'unit_id': unitId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const newBadgeDiv = document.createElement('div');
+                    newBadgeDiv.innerHTML = '<span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Saved</span>';
+                    // Find the <td> with class 'badgeTD'
+                    if (badgeTD) {
+                        badgeTD.appendChild(newBadgeDiv); // Add the new <div> to the <td>
+                    }
+                    radioCheckedButton.setAttribute('data-is-saved', 'true');
+
+                    // Show success notification
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Saved!',
+                        text: 'This unit has been saved to your profile.',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Already Saved',
+                        text: 'This unit was already saved to your profile.',
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Failed to Save',
+                    text: 'There was an error saving the unit.',
+                });
+            });
+        } else {
+            // if already saved-> action=remove
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to remove this unit from your saved list? Any notes you have made will be deleted.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, remove it!',
+                cancelButtonText: 'Cancel',
+                preConfirm: () => {
+                    // If confirmed, perform the AJAX request
+                    return fetch("{% url 'Ranker:ajax_remove_save' %}", {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': '{{ csrf_token }}',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ 'unit_id': unitId })
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+
+                            const badgeDivToRemove = badgeTD.querySelector('div > span.bg-green-100');
+                            if (badgeDivToRemove) {
+                                badgeDivToRemove.parentElement.remove(); // Remove the parent <div>
+                            }
+                            radioCheckedButton.setAttribute('data-is-saved', 'false');
+
+                            // Show success notification
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Removed!',
+                                text: 'This unit has been removed from your saved list.',
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'info',
+                                title: 'Unit Not Saved',
+                                text: data.message || 'This unit was not found in your saved list.',
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Failed to Remove',
+                            text: 'There was an error removing the unit.',
+                        });
+                    });
+                }
+            });
+        }
+    }
+
+    function performSucksAction() {
+        // Open the modal
+        Swal.fire({
+            title: 'Why does this apartment suck?',
+            input: 'textarea',
+            inputPlaceholder: 'Describe why this apartment sucks...',
+            inputAttributes: {
+                'aria-label': 'Describe why this apartment sucks'
+            },
+            showCancelButton: true,
+            confirmButtonText: 'Submit',
+            preConfirm: (description) => {
+                if (!description) {
+                    Swal.showValidationMessage('Please enter a description');
+                }
+                return description;
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{% url 'Ranker:ajax_sucks_unit' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'unit_id': unitId, 'description': result.value })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Report Submitted',
+                            text: 'Your report has been submitted successfully.',
+                        });
+
+                        const sucksBadgeDiv = document.createElement('div');
+                        sucksBadgeDiv.innerHTML = '<span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Reported (Sucks)</span>';
+
+                        // Find the <td> with class 'badgeTD'
+                        if (badgeTD) {
+                            badgeTD.appendChild(sucksBadgeDiv); // Add the new <div> to the <td>
+                        }
+                        radioCheckedButton.setAttribute('data-is-reported-sucks', 'true');
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'An error occurred.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'There was an error submitting your report.',
+                    });
+                });
+            }
+        });
+    }
+
+    function performNAAction() {
+        Swal.fire({
+            title: 'Confirm Availability',
+            text: 'Are you sure this apartment is not available? Your report will be linked to your profile.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, report it',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch("{% url 'Ranker:ajax_not_available_unit' %}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'unit_id': unitId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reported',
+                            text: 'This apartment has been reported as not available.',
+                        });
+
+                        const notAvailBadgeDiv = document.createElement('div');
+                        notAvailBadgeDiv.innerHTML = '<span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Reported (Not Avail.)</span>';
+
+                        // Find the <td> with class 'badgeTD'
+                        if (badgeTD) {
+                            badgeTD.appendChild(notAvailBadgeDiv); // Add the new <div> to the <td>
+                        }
+                        radioCheckedButton.setAttribute('data-is-reported-na', 'true');
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.message || 'An error occurred.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'There was an error submitting your report.',
+                    });
+                });
+            }
+        });
+    }
+
+    const editModal = document.getElementById('editModal');
+    
+    function performEditAction() {
+        // {% if request.user.is_staff %}
+        const fetchUrl = "{% url 'Ranker:ajax_get_unit_details' unit_id=1 %}".replace('1', unitId);
+        // Fetch unit data from the server (for demonstration, assuming data is fetched)
+        fetch(fetchUrl)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('unitId').value = data.unitId;
+                document.getElementById('status').value = data.status;
+                document.getElementById('neighborhood').value = data.neighborhood_id;
+                document.getElementById('unitType').value = data.unitType_id;
+                document.getElementById('listingLink').value = data.listingLink;
+                document.getElementById('price').value = data.price;
+                document.getElementById('qualityRating').value = data.qualityRating;
+                document.getElementById('note').value = data.note;
+
+                editModal.classList.remove('hidden');
+            });
+        // {% endif %}
+    }
+
+    function performDeleteAction() {
+        // {% if request.user.is_staff %}
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you really want to delete this unit? This action cannot be undone.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`{% url "Ranker:ajax_delete_unit" %}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 'unit_id': unitId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: 'The unit has been deleted.',
+                        }).then(() => {
+                            location.reload(); // Reload the page to reflect the changes
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: data.errors || 'An unexpected error occurred.',
+                        });
+                    }
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'There was an error processing your request.',
+                    });
+                });
+            }
+        });
+        // {% endif %}
+    }
+});
+// {% if request.user.is_staff %}
+document.addEventListener('DOMContentLoaded', function() {
+
+    const editModal = document.getElementById('editModal');
+    const cancelButton = document.getElementById('cancelButton');
+    const editForm = document.getElementById('editForm');
+
+    cancelButton.addEventListener('click', function() {
+        editModal.classList.add('hidden');
+    });
+
+    editForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const unitId = document.getElementById('unitId').value;
+        const formData = new FormData(editForm);
+
+        fetch(`{% url "Ranker:ajax_update_unit" %}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the table or the UI accordingly
+                editModal.classList.add('hidden');
+                location.reload(); // Reload the page to see the changes
+            } else {
+                // Handle errors
+                alert('An error occurred while saving the changes.');
+            }
+        });
+    });
+});
+// {% endif %}
+</script>
+{% endif %}
+
+{% else %}
+<div class="flex flex-col items-center justify-center pt-4 md:pt-20">
+  <img src="{% static 'undraw_building.svg' %}" class="w-96" alt="No units found."/>
+  <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 mt-10 px-4">Looks like we don't have any apartments for you today. Check back tomorrow!</p>
+</div>
+{% endif %}
+
+
+{% endblock %}
