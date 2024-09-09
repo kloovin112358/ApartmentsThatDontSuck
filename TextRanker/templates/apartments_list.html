@@ -20,7 +20,7 @@
     </div>
 </div>
 <div class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
-    <div class="px-2 py-6">
+    <div class="px-2 pt-4 pb-24">
         {% if request.user.is_authenticated %}
         <div class="max-w-md flex items-center space-x-2 mb-3">
             <label for="rowAction" class="block text-sm font-medium text-gray-900 dark:text-white">
@@ -163,7 +163,7 @@
                         {% endif %}
                     </td>
                     {% endif %}
-                    <td class="font-bold">{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
+                    <td>{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
                     <td class="font-bold">{{unit.unitType}}</td>
                     <td class="font-bold">{{unit.neighborhood}}</td>
                     <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
