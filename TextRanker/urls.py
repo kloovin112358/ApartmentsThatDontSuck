@@ -1,37 +1,42 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from .views import *
-from .forms import CustomPasswordResetForm
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import *
 
 app_name = "Ranker"
+
+sitemaps = {
+    'static': StaticViewSitemap(),
+    'about': AboutPageSitemap(),
+    'home': HomePageSitemap()
+}
+
 
 urlpatterns = [
     # public pages
     path("", ApartmentsList, name="home"),
     path("about/", aboutPage, name="about_page"),
-    
-    # logged in pages
-    path("account/", MyAccountView.as_view(), name="my_account"),
 
     # admin pages
-    path("reports/", ReportsList, name="reports"),
-    path("searches/", apartmentSearches, name="searches"),
-    path("value_matrix/", valueMatrix, name="value_matrix"),
-
-    path('test/', testAnything, name="test_anything"),
+    path("maintenance/reports/", ReportsList, name="reports"),
+    path("maintenance/searches/", apartmentSearches, name="searches"),
+    path("maintenance/value_matrix/", valueMatrix, name="value_matrix"),
 
     # login/logout/signup
     path("login/", CustomUserLoginView.as_view(), name="login_page"),
     path('logout/', LogoutView.as_view(), name='logout'),
     path("signup/", SignUpView.as_view(), name='sign_up'),
 
+    path("account/", MyAccountView.as_view(), name="my_account"),
+
     # delete account
-    path('delete_account/', DeleteAccountView.as_view(), name='delete_account'),
-    path('account_deleted/', AccountDeletedView.as_view(), name='account_deleted'),
+    path('account/delete_account/', DeleteAccountView.as_view(), name='delete_account'),
+    path('account/account_deleted/', AccountDeletedView.as_view(), name='account_deleted'),
 
     # email verification
-    path("email_verification_required/", EmailVerificationRequired, name="email_verification_required"),
-    path("verify_email/<uuid:id>/", verifyEmail, name="click_email_verify_link"),
+    path("account/email_verification_required/", EmailVerificationRequired, name="email_verification_required"),
+    path("account/verify_email/<uuid:id>/", verifyEmail, name="click_email_verify_link"),
 
     #AJAX
     #general user URLs
@@ -52,8 +57,10 @@ urlpatterns = [
     path('ajax/get_unit_details/<int:unit_id>/', ajax_get_unit_details, name='ajax_get_unit_details'),
 
     # Password reset URLs
-    path('password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+    path('account/password_reset/', CustomPasswordResetView.as_view(), name='password_reset'),
+    path('account/password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='password_reset_done.html'), name='password_reset_done'),
+    path('account/reset/<uidb64>/<token>/', CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('account/reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'), name='password_reset_complete'),
+
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
 ]

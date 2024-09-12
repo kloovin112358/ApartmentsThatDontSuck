@@ -1,11 +1,6 @@
-# your_app/templatetags/custom_filters.py
-
 from django import template
 from django.utils import timezone
 import datetime
-
-# myapp/templatetags/custom_filters.py
-
 from django import template
 from datetime import datetime, timedelta
 from django.utils.timezone import now

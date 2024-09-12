@@ -5,7 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     path("", include("TextRanker.urls")),
-    path("admin/", admin.site.urls),
+    path("beef-a-reno/", admin.site.urls),
 ]
 
 if settings.DEBUG:

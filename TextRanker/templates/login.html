@@ -6,15 +6,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-screen-xl mx-auto p-4">
+<section class="max-w-screen-xl mx-auto p-4">
     <div class="w-full max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-8 dark:bg-gray-800 dark:border-gray-700 mx-auto">
-        <form method="post" action="{% url 'Ranker:login_page' %}" class="space-y-6">
-            <h5 class="text-xl font-medium text-gray-900 dark:text-white py-0">Log In</h5>
+        <form method="post" action="{% url 'Ranker:login_page' %}" class="space-y-6" aria-labelledby="loginHeading">
+            <h1 class="text-xl font-medium text-gray-900 dark:text-white py-0" id="loginHeading">Log In</h1>
             {% csrf_token %}
             
             <!-- Non-Field Errors -->
             {% if form.non_field_errors %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert" aria-live="assertive">
                     {% for error in form.non_field_errors %}
                         <span class="block sm:inline">{{ error }}</span>
                     {% endfor %}
@@ -23,25 +23,25 @@
             
             <!-- Email Field -->
             <div>
-              <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
-              <input type="email" name="username" id="id_username" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="apartmenthunter@gmail.com" required />
-              <!-- Display errors for this field -->
-              {% if form.username.errors %}
-                  <p class="text-red-500 text-sm mt-1">
-                      {% for error in form.username.errors %}
-                          {{ error }}
-                      {% endfor %}
-                  </p>
-              {% endif %}
-          </div>
+                <label for="id_username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
+                <input type="email" name="username" id="id_username" autocomplete="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" placeholder="apartmenthunter@gmail.com" required aria-describedby="usernameError"/>
+                <!-- Display errors for this field -->
+                {% if form.username.errors %}
+                    <p id='usernameError' class="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
+                        {% for error in form.username.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </p>
+                {% endif %}
+            </div>
             
             <!-- Password Field -->
             <div>
               <label for="id_password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your password</label>
-              <input type="password" name="password" id="id_password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required />
+              <input type="password" name="password" id="id_password" placeholder="••••••••" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white" required aria-describedby="passwordError" />
               <!-- Display errors for this field -->
               {% if form.password.errors %}
-                  <p class="text-red-500 text-sm mt-1">
+                  <p id="passwordError" class="text-red-500 text-sm mt-1" role="alert" aria-live="assertive">
                       {% for error in form.password.errors %}
                           {{ error }}
                       {% endfor %}
@@ -51,18 +51,19 @@
 
             <!-- Submit Button -->
             <button type="submit" class="w-full text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">Log in to your account</button>
+            
             <div>
-            <!-- Sign Up Link -->
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">
-                Not registered? <a href="{% url 'Ranker:sign_up' %}" class="text-blue-700 hover:underline dark:text-blue-500">Create account</a>.
-            </div>
+                <!-- Sign Up Link -->
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-300 mb-1">
+                    Not registered? <a href="{% url 'Ranker:sign_up' %}" class="text-blue-700 hover:underline dark:text-blue-500" aria-label="Create an account">Create account</a>.
+                </div>
 
-            <!-- Password Reset Link -->
-            <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
-                Forgot your password? <a href="{% url 'Ranker:password_reset' %}" class="text-blue-700 hover:underline dark:text-blue-500">Reset password</a>.
+                <!-- Password Reset Link -->
+                <div class="text-sm font-medium text-gray-500 dark:text-gray-300">
+                    Forgot your password? <a href="{% url 'Ranker:password_reset' %}" class="text-blue-700 hover:underline dark:text-blue-500" aria-label="Reset password">Reset password</a>.
+                </div>
             </div>
-        </div>
         </form>
     </div>
-</div>
+</section>
 {% endblock %}

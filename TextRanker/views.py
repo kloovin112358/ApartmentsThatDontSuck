@@ -1,33 +1,23 @@
 from django.shortcuts import render
 from .models import *
-from django.views.generic.list import ListView
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 import json
 from django.urls import reverse
 from django.contrib import messages
 from django.db import IntegrityError
-from django.views.generic.list import ListView
-import datetime
 from django.db.models import Q, Prefetch
-from django.views.generic import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import login
 from .forms import *
-from django.contrib.auth.views import LoginView
 from .forms import CustomUserLoginForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import TemplateView
 from django.contrib.auth import logout
 from django.views.generic import RedirectView
-from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
-from django.http import HttpResponseRedirect
-from django.core.exceptions import PermissionDenied
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from django.utils import timezone
@@ -38,25 +28,28 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView, LoginView
 from django.contrib.auth.password_validation import password_validators_help_text_html
-from django.utils import timezone, dateformat
+from django.utils import timezone
 from django.utils.formats import date_format
-from django.db.models import Count
-from django.db.models import Count, Q, F, Value
+from django.db.models import Count, Q
 from django.contrib.auth.decorators import user_passes_test
-def testAnything(request):
-    # send_mail(
-    #     'Subject here',
-    #     'Here is the message.',
-    #     'from@example.com',
-    #     ['to@example.com'],
-    #     fail_silently=False,
-    # )
-    return render(request, 'testdatatable.html')
+
+# def testAnything(request):
+#     # send_mail(
+#     #     'Subject here',
+#     #     'Here is the message.',
+#     #     'from@example.com',
+#     #     ['to@example.com'],
+#     #     fail_silently=False,
+#     # )
+#     return render(request, 'verify_email.html')
 
 def is_user_staff(user):
-    return user.is_staff
+    return user.is_user_account_valid_and_verified_and_staff()
+
+def is_user_verified(user):
+    return user.is_user_account_valid_and_verified()
 
 class LogoutView(RedirectView):
     url = reverse_lazy('Ranker:home')  # Redirect to home or any other page after logout
@@ -302,26 +295,6 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         context['password_help_text'] = password_validators_help_text_html()
         return context
 
-# def SignUp(request):
-#     if request.method == 'POST':
-#         form = CustomUserCreationForm(request.POST)
-#         if form.is_valid():
-#             try:
-#                 user = form.save()
-#                 # Log the user in after signing up
-#                 login(request, user)
-#                 return redirect(reverse('Ranker:email_verification_required') + '?prefillSend=true')
-#             except IntegrityError as e:
-#                 # Handle the unique constraint error
-#                 if 'UNIQUE constraint failed' in str(e):
-#                     form.add_error(None, "An account with this email address already exists.")
-#                 else:
-#                     form.add_error(None, "An error occurred. Please try again.")
-#     else:
-#         form = CustomUserCreationForm()
-
-#     return render(request, 'signup.html', {'form': form})
-
 @user_passes_test(is_user_staff)
 @login_required
 @require_POST
@@ -355,6 +328,7 @@ def ajax_add_unit(request):
         # Handle exceptions and return error response
         return JsonResponse({'success': False, 'error': str(e)})
 
+@user_passes_test(is_user_verified)
 @login_required
 @require_POST
 def ajax_save_unit(request):
@@ -378,6 +352,7 @@ def ajax_save_unit(request):
     else:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
 
+@user_passes_test(is_user_verified)
 @login_required
 @require_POST
 def ajax_remove_save(request):
@@ -402,6 +377,7 @@ def ajax_remove_save(request):
     else:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
 
+@user_passes_test(is_user_verified)
 @login_required
 @require_POST
 def ajax_sucks_unit(request):
@@ -430,6 +406,7 @@ def ajax_sucks_unit(request):
     else:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
 
+@user_passes_test(is_user_verified)
 @login_required
 @require_POST
 def ajax_not_available_unit(request):
@@ -635,7 +612,7 @@ def ajax_get_unit_details(request, unit_id):
     return JsonResponse({'success': False, 'error': 'Invalid request'})
 
 
-
+@user_passes_test(is_user_verified)
 @require_POST
 @login_required
 @csrf_exempt

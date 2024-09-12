@@ -3,12 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="TODO">
-    <meta name="keywords" content="TODO">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Kevin Lauer">
+    <meta name="description" content="Apartments That Don't Suck is a platform where we post Chicago's best apartments. We scour the web and link to the best deals and best apartments we can find.">
+    <meta name="keywords" content="Apartments, Chicago, Real estate, Search">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    {% load compress %}
+
     {% load static %}
-    <link rel="icon" type="image/x-icon" href="{% static 'ATDS_Logo_favicon_new.ico' %}">
+    <meta property="og:title" content="Apartments That Don't Suck">
+    <meta property="og:description" content="Apartments That Don't Suck is a platform where we post Chicago's best apartments. We scour the web and link to the best deals and best apartments we can find.">
+    <meta property="og:image" content="{% static 'ATDS_Logo_Published.png' %}">
+    <meta property="og:url" content="{% block og_url %}{% url 'Ranker:home' %}{% endblock %}">
+    <meta property="og:type" content="website">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Apartments That Don't Suck">
+    <meta name="twitter:description" content="Apartments That Don't Suck is a platform where we post Chicago's best apartments. We scour the web and link to the best deals and best apartments we can find.">
+    <meta name="twitter:image" content="{% static 'ATDS_Logo_Published.png' %}">
+    <meta name="twitter:url" content="{% url 'Ranker:home' %}">
+
+    <link rel="icon" href="{% static 'ATDS_Logo_favicon_new.ico' %}" sizes="any">
+    <link rel="icon" href="{% static 'ATDS_favicon_16x16.png' %}" sizes="16x16" type="image/png">
+    <link rel="icon" href="{% static 'ATDS_favicon_32x32.png' %}" sizes="32x32" type="image/png">
+    <link rel="apple-touch-icon" href="{% static 'ATDS_Logo_apple_touch.png' %}">
+
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'src/output.css' %}">
 </head>
@@ -16,7 +37,7 @@
   <nav class="bg-white border-b border-gray-200 dark:border-gray-600 drop-shadow-md">
     <div class="max-w-screen-3xl flex flex-wrap items-center justify-between mx-auto py-4 px-2 3xl:px-0">
       <a href="{% url 'Ranker:home' %}" class="flex items-center space-x-3 rtl:space-x-reverse">
-          <img src="{% static 'ATDS_Logo_Published.png' %}" height="30" width="180">
+          <img src="{% static 'ATDS_Logo_Published.png' %}" height="30" width="180" alt="Apartments That Don't Suck logo">
       </a>
       <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
           <span class="sr-only">Open main menu</span>
@@ -45,7 +66,7 @@
               </li>
             {% endif %}
             <li class="px-2">
-              <a href="{% url 'Ranker:my_account' %}" class="items-center block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-purple-700 md:p-0 dark:text-white md:dark:hover:text-purple-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
+              <a href="{% url 'Ranker:my_account' %}" aria-label="My Account" class="items-center block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-purple-700 md:p-0 dark:text-white md:dark:hover:text-purple-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent">
                 <svg class="w-[40px] h-[40px] text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                   <path class="text-purple-700" fill-rule="evenodd" d="M12 20a7.966 7.966 0 0 1-5.002-1.756l.002.001v-.683c0-1.794 1.492-3.25 3.333-3.25h3.334c1.84 0 3.333 1.456 3.333 3.25v.683A7.966 7.966 0 0 1 12 20ZM2 12C2 6.477 6.477 2 12 2s10 4.477 10 10c0 5.5-4.44 9.963-9.932 10h-.138C6.438 21.962 2 17.5 2 12Zm10-5c-1.84 0-3.333 1.455-3.333 3.25S10.159 13.5 12 13.5c1.84 0 3.333-1.455 3.333-3.25S13.841 7 12 7Z" clip-rule="evenodd"/>
                 </svg>
@@ -57,11 +78,9 @@
                 Sign Up
             </a>
         </li>
-        
           <li class="mt-6 md:mt-0">
             <a href="{% url 'Ranker:login_page' %}" class="focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 lg:me-2 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900">Log In</a>
           </li >
-          
           {% endif %}
         </ul>
       </div>
@@ -70,7 +89,7 @@
   
   <!-- Messages Section -->
   {% if messages %}
-    <div class="max-w-screen-3xl mx-auto py-2 px-2 3xl:px-0">
+    <section class="max-w-screen-3xl mx-auto py-2 px-2 3xl:px-0">
       {% for message in messages %}
         <div 
           class="flex items-center p-4 mb-2 text-sm rounded-lg border
@@ -84,8 +103,9 @@
           text-yellow-800 bg-yellow-50 dark:bg-gray-800 dark:text-yellow-300 border-yellow-300
           {% elif 'error' in message.tags %}
           text-red-800 bg-red-50 dark:bg-gray-800 dark:text-red-400 border-red-300
-          {% endif %}">
-       
+          {% endif %}"
+          role="alert"
+        >
           <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
             <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
           </svg>
@@ -95,18 +115,16 @@
           </div>
         </div>
       {% endfor %}
-    </div>
+    </section>
   {% endif %}
-    <main class="flex-grow">
-      {% block content %}
-  {% endblock %}
-    </main>
-  
-
+  <main class="flex-grow">
+    {% block content %}
+    {% endblock %}
+  </main>
   <footer class="bg-white dark:bg-gray-800 border border-top mt-auto" style="background-color: #f9fafb;">
     <div class="w-full mx-auto max-w-screen-xl p-4 md:flex md:items-center md:justify-between pb-12">
       <span class="text-sm text-gray-500 sm:text-center dark:text-gray-400">
-        © 2024 <a href="https://flowbite.com/" class="hover:underline">HBFH Enterprises, LLC</a>. All Rights Reserved.
+        © 2024 HBFH Enterprises, LLC. All Rights Reserved.
       </span>
       <ul class="flex flex-wrap items-center mt-3 text-sm font-medium text-gray-500 dark:text-gray-400 sm:mt-0">
           <li>

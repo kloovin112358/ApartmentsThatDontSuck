@@ -8,8 +8,8 @@
 {% block content %}
 <div class="container mx-auto px-4 py-6">
     {% for unit_type in unit_types %}
-    <div class="py-24">
-        <h5 class="text-4xl font-medium text-gray-900 dark:text-white py-0 mb-4">{{unit_type}}</h5>
+    <section class="py-24">
+        <h1 class="text-4xl font-medium text-gray-900 dark:text-white py-0 mb-4">{{unit_type}}</h1>
         <div class="relative overflow-x-auto">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mb-4 rounded-lg shadow-md">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
@@ -55,8 +55,9 @@
         class="saveButton focus:outline-none text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900"
         data-unit-type-id="{{unit_type.id}}"
         >Save</button>
+    </section>
     {% endfor %}
-    </div>
+    
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

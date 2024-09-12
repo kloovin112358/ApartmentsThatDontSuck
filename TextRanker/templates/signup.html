@@ -6,15 +6,15 @@
 {% endblock %}
 
 {% block content %}
-<div class="max-w-screen-sm mx-auto p-4">
+<section class="max-w-screen-sm mx-auto p-4">
     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-        <h5 class="text-2xl font-medium text-gray-900 mb-6">Sign Up</h5>
-        <form method="post">
+        <h1 class="text-2xl font-medium text-gray-900 mb-6">Sign Up</h1>
+        <form method="post" aria-describedby="nonFieldErrors">
             {% csrf_token %}
 
             <!-- Non-Field Errors -->
             {% if form.non_field_errors %}
-                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert" id="nonFieldErrors">
                     {% for error in form.non_field_errors %}
                         <span class="block sm:inline">{{ error }}</span>
                     {% endfor %}
@@ -26,9 +26,10 @@
                 <label for="id_email" class="block mb-2 text-sm font-medium text-gray-900">Your email</label>
                 <input type="email" name="email" id="id_email"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-                    placeholder="apartmenthunter@gmail.com" required />
+                    placeholder="apartmenthunter@gmail.com" required 
+                    aria-describedby="emailErrors" autocomplete="email"/>
                 {% if form.email.errors %}
-                    <p class="text-red-500 text-sm mt-1">
+                    <p class="text-red-500 text-sm mt-1" id="emailErrors">
                         {% for error in form.email.errors %}
                             {{ error }}
                         {% endfor %}
@@ -41,9 +42,9 @@
                 <label for="id_password1" class="block mb-2 text-sm font-medium text-gray-900">Password</label>
                 <input type="password" name="password1" id="id_password1"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-                    placeholder="••••••••" required />
+                    placeholder="••••••••" required aria-describedby="pwErrors"/>
                 {% if form.password1.errors %}
-                    <p class="text-red-500 text-sm mt-1">
+                    <p class="text-red-500 text-sm mt-1" id="pwErrors">
                         {% for error in form.password1.errors %}
                             {{ error }}
                         {% endfor %}
@@ -56,9 +57,9 @@
                 <label for="id_password2" class="block mb-2 text-sm font-medium text-gray-900">Confirm Password</label>
                 <input type="password" name="password2" id="id_password2"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-purple-500 focus:border-purple-500 block w-full p-2.5"
-                    placeholder="••••••••" required />
+                    placeholder="••••••••" required aria-describedby="pw2errors"/>
                 {% if form.password2.errors %}
-                    <p class="text-red-500 text-sm mt-1">
+                    <p class="text-red-500 text-sm mt-1" id="pw2errors">
                         {% for error in form.password2.errors %}
                             {{ error }}
                         {% endfor %}
@@ -68,10 +69,10 @@
 
             <!-- Password Requirements -->
             <div class="mb-6">
-                <h6 class="text-sm font-medium text-gray-900 mb-1">Password Requirements</h6>
-                <div class="text-sm text-gray-600">
+                <h2 class="text-sm font-medium text-gray-900 mb-1">Password Requirements</h2>
+                <p class="text-sm text-gray-600">
                     {{ password_help_text|safe }}
-                </div>
+                </p>
             </div>
 
             <!-- Submit Button -->
@@ -83,5 +84,5 @@
             </div>
         </form>
     </div>
-</div>
+</section>
 {% endblock %}

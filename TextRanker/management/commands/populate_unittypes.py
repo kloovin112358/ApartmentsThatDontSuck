@@ -10,7 +10,6 @@ class Command(BaseCommand):
             "1-Bedroom",
             "2-Bedroom",
             "3-Bedroom",
-            "4-Bedroom"
         ]
 
         for unit_type in unit_types:

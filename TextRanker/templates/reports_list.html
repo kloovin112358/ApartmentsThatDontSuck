@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="container mx-auto px-4 py-6">
+<section class="container mx-auto px-4 py-6">
     {% if units %}
         <h1 class="text-2xl font-bold mb-4">Reported Units</h1>
         {% for unit in units %}
@@ -82,11 +82,11 @@
         {% endfor %}
     {% else %}
     <div class="flex flex-col items-center justify-center pt-4 md:pt-20">
-        <img src="{% static 'undraw_among_nature.svg' %}" class="w-96" />
-        <h1 class="flex items-center text-2xl font-bold text-purple-800 mt-6">No reports found. Have a great day!</h1>
+        <img src="{% static 'undraw_among_nature.svg' %}" class="w-96" aria-hidden="true" />
+        <h2 class="flex items-center text-2xl font-bold text-purple-800 mt-6">No reports found. Have a great day!</h2>
     </div>
     {% endif %}
-</div>
+</section>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('button[data-report-id]').forEach(button => {

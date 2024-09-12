@@ -9,7 +9,7 @@
 {% block content %}
 <div class="max-w-screen-3xl mx-auto">
     <div class="grid grid-cols-1 lg:grid-cols-4 lg:gap-4 pb-24">
-        <div>
+        <section>
         <div class="bg-white border border-gray-200 rounded-lg shadow p-6 ms-2 mx-2 lg:me-0 mt-3 flex-shrink">
             <h2 class="text-xl font-semibold mb-4">Add Apartment to Database</h2>
             <form>
@@ -75,8 +75,8 @@
               </div>
             </form>
           </div>
-        </div>
-        <div class="col-span-3">
+        </section>
+        <section class="col-span-3">
             <div class="mx-2 lg:ms-0">
                 <div class="mb-2 border border-gray-200 rounded-lg shadow mt-3">
                     <ul class="flex flex-wrap -mb-px text-sm font-medium text-center" id="default-tab" data-tabs-toggle="#default-tab-content" role="tablist">
@@ -150,10 +150,12 @@
                     {% endfor %}
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </div>
 <script>
+var unitTypeId = null
+const dropdown = document.getElementById('unit-type-dropdown');
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.querySelector('form');
     form.addEventListener('submit', function (event) {
@@ -183,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 // Reset form
                 form.reset();
+                dropdown.value = unitTypeId
             } else {
                 // Show error toast
                 Swal.fire({
@@ -204,11 +207,10 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 document.addEventListener("DOMContentLoaded", function () {
     const tabs = document.querySelectorAll('[data-unit-type]');
-    const dropdown = document.getElementById('unit-type-dropdown');
 
     tabs.forEach(tab => {
         tab.addEventListener('click', function () {
-            const unitTypeId = this.getAttribute('data-unit-type');
+            unitTypeId = this.getAttribute('data-unit-type');
             dropdown.value = unitTypeId;
         });
     });

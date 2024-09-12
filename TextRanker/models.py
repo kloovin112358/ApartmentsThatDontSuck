@@ -1,19 +1,11 @@
 from django.db import models
-from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import gettext_lazy as _
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.conf import settings
-from django.core.validators import MaxValueValidator, MinValueValidator
-from djmoney.models.fields import MoneyField
-from django.utils.text import slugify
-from django.urls import reverse
 import uuid
 
 class DisposableEmailDomain(models.Model):
@@ -63,7 +55,6 @@ class CustomUser(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True, validators=[validate_not_disposable_email])
     verified_account = models.BooleanField(default=False, verbose_name="Verified account?", help_text="Flipped to true when user clicks verification link sent to email address")
-    account_under_review = models.BooleanField(default=False, verbose_name="Account under review?", help_text="This will be true when a ticket listing by this user has been reported")
     account_banned = models.BooleanField(default=False, verbose_name="Account banned?", help_text="If this is true, user has been banned for cause after review by admin")
     ban_datetime = models.DateTimeField(blank=True, null=True, verbose_name="Date and time of account ban")
     ban_removal_datetime = models.DateTimeField(blank=True, null=True, verbose_name="Date and time account ban to be removed")
@@ -76,6 +67,22 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+    def is_user_account_valid(self):
+        if self.is_active and not self.account_banned:
+            return True
+        return False
+
+    def is_user_account_valid_and_verified(self):
+        if self.is_user_account_valid() and self.verified_account:
+            return True
+        return False
+    
+    def is_user_account_valid_and_verified_and_staff(self):
+        if self.is_user_account_valid_and_verified() and self.is_staff:
+            return True
+        return False
+
 
 class EmailVerification(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -149,7 +156,7 @@ class Unit(models.Model):
     note = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.listing_link
+        return f"Status: {self.status}, {self.neighborhood} {self.unitType} @ ${self.price:.2f}/mo, Link: {self.listing_link}"
 
     def calculate_value_rating(self):
         try:

@@ -8,6 +8,12 @@
 {% endblock %}
 
 {% block content %}
+
+<!-- heading for screen readers -->
+<h1 class="sr-only">Apartments That Don't Suck - Apartments List</h1>
+<!-- aria-live region for screen readers -->
+<div id="notification-region" aria-live="assertive" class="sr-only"></div>
+
 {% if units %}
 <!-- Spinner Container -->
 <div role="status" id="spinner" class="container mx-auto mt-4 hidden">
@@ -19,14 +25,14 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
-<div class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
+<section class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
     <div class="px-2 pt-4 pb-24">
         {% if request.user.is_authenticated %}
         <div class="max-w-md flex items-center space-x-2 mb-3">
             <label for="rowAction" class="block text-sm font-medium text-gray-900 dark:text-white">
                 Unit action
             </label>
-            <select id="rowAction" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-1.5">
+            <select id="rowAction" aria-label="Select an action for the unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-1.5">
                 <option value="">----------</option>
                 {% if request.user.verified_account == True %}
                 <option value="Save">Save/Unsave Unit</option>
@@ -38,14 +44,16 @@
                 <option value="Delete">Delete</option>
                 {% endif %}
             </select>
-            <button type="button" id="submitActionBtn" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+            <button type="button" id="submitActionBtn" aria-label="Submit action for unit" class="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                 Go
             </button>
         </div>
         
         {% else %}
         <div class="mb-4">
-            <a href="{% url 'Ranker:sign_up' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Sign up</a> or <a href="{% url 'Ranker:login_page' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">log in</a> to save and report listings.
+            <p>
+                <a href="{% url 'Ranker:sign_up' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="Sign up for an account">Sign up</a> or <a href="{% url 'Ranker:login_page' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="Log in to your account">log in</a> to save and report listings.
+            </p>
         </div>
         
         {% endif %}
@@ -53,7 +61,7 @@
             <thead>
                 <tr>
                     {% if request.user.is_authenticated %}
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Select
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -61,7 +69,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Account Action
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -70,7 +78,7 @@
                         </span>
                     </th>
                     {% endif %}
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Added to ATDS
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -78,7 +86,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Unit Type
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -86,7 +94,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Neighborhood
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -94,7 +102,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Price/Mo
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -102,7 +110,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Quality
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -110,7 +118,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Value
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -118,7 +126,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th>
+                    <th scope="col">
                         <span class="flex items-center">
                             Link
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -143,22 +151,23 @@
                             data-is-saved="{% if unit.is_saved %}true{% else %}false{% endif %}"
                             data-is-reported-na="{% if unit.is_not_available_reported %}true{% else %}false{% endif %}"
                             data-is-reported-sucks="{% if unit.is_sucks_reported %}true{% else %}false{% endif %}"
+                            aria-label="Select unit {{unit.id}}"
                         >
                     </td>
                     <td class="badgeTD">
                         {% if unit.is_saved %}
                             <div>
-                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300">Saved</span>
+                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300" aria-label="Saved badge">Saved</span>
                             </div>
                         {% endif %}
                         {% if unit.is_sucks_reported %}
                             <div>
-                                <span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300">Reported (Sucks)</span>
+                                <span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300" aria-label="Reported (Sucks) badge">Reported (Sucks)</span>
                             </div>
                         {% endif %}
                         {% if unit.is_not_available_reported %}
                             <div>
-                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300">Reported (Not Avail.)</span>
+                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300" aria-label="Reported (Not Available) badge">Reported (Not Avail.)</span>
                             </div>
                         {% endif %}
                     </td>
@@ -223,19 +232,19 @@
                     ">
                         {{ unit.value_rating }}/10
                     </td>
-                    <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{unit.listing_link}}</a></td>
+                    <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
+</section>
 {% if request.user.is_staff %}
 <!-- Edit Modal -->
-<div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Edit Unit</h2>
-        <form id="editForm">
+<div id="editModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6" role="document">
+        <h2 id="editModalLabel" class="text-xl font-semibold mb-4">Edit Unit</h2>
+        <form id="editForm" aria-labelledby="editModalLabel">
             <input type="hidden" id="unitId" name="unitId">
 
             <!-- Status -->
@@ -339,7 +348,8 @@ document.addEventListener('DOMContentLoaded', function () {
                                 attributes: {
                                     class: "datatable-input w-full text-xs px-1 py-0.5", // Smaller input size
                                     type: "search",
-                                    "data-columns": "[" + index + "]"
+                                    "data-columns": "[" + index + "]",
+                                    name: "filter-" + index
                                 }
                             }
                         ]
@@ -352,7 +362,10 @@ document.addEventListener('DOMContentLoaded', function () {
         // Hide the spinner once the DataTable is initialized
         dataTable.on("datatable.init", () => {
             spinner.classList.add('hidden');
-            document.getElementById("pageContentContainer").classList.remove('hidden');
+            spinner.setAttribute('aria-hidden', 'true');
+            const contentContainer = document.getElementById("pageContentContainer");
+            contentContainer.classList.remove('hidden');
+            contentContainer.setAttribute('aria-live', 'polite');
         });
         dataTable.on('datatable.pager', storeSelectedRadio);
         dataTable.on('datatable.sort', storeSelectedRadio);
@@ -375,6 +388,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var unitId = null
     var radioCheckedButton = null
     var badgeTD = null
+    const notificationRegion = document.getElementById('notification-region');
     // Attach event listener to the button
     document.getElementById('submitActionBtn').addEventListener('click', function () {
         // Get the select element and its value
@@ -463,12 +477,20 @@ document.addEventListener('DOMContentLoaded', function () {
                         icon: 'success',
                         title: 'Saved!',
                         text: 'This unit has been saved to your profile.',
+                        didOpen: () => {
+                            notificationRegion.setAttribute('aria-live', 'polite');
+                            notificationRegion.innerText = 'This unit has been saved to your profile.';
+                        }
                     });
                 } else {
                     Swal.fire({
                         icon: 'info',
                         title: 'Already Saved',
                         text: 'This unit was already saved to your profile.',
+                        didOpen: () => {
+                            notificationRegion.setAttribute('aria-live', 'assertive');
+                            notificationRegion.innerText = 'This unit was already saved to your profile.';
+                        }
                     });
                 }
             })
@@ -478,6 +500,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     icon: 'error',
                     title: 'Failed to Save',
                     text: 'There was an error saving the unit.',
+                    didOpen: () => {
+                        notificationRegion.setAttribute('aria-live', 'assertive');
+                        notificationRegion.innerText = 'There was an error saving the unit.';
+                    }
                 });
             });
         } else {
@@ -519,12 +545,20 @@ document.addEventListener('DOMContentLoaded', function () {
                                 icon: 'success',
                                 title: 'Removed!',
                                 text: 'This unit has been removed from your saved list.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'polite');
+                                    notificationRegion.innerText = 'This unit has been removed from your saved list.';
+                                }
                             });
                         } else {
                             Swal.fire({
                                 icon: 'info',
                                 title: 'Unit Not Saved',
                                 text: data.message || 'This unit was not found in your saved list.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'assertive');
+                                    notificationRegion.innerText = data.message || 'This unit was not found in your saved list.';
+                                }
                             });
                         }
                     })
@@ -534,6 +568,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'error',
                             title: 'Failed to Remove',
                             text: 'There was an error removing the unit.',
+                            didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'assertive');
+                                notificationRegion.innerText = 'There was an error removing the unit.';
+                            }
                         });
                     });
                 }
@@ -575,6 +613,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'success',
                             title: 'Report Submitted',
                             text: 'Your report has been submitted successfully.',
+                            didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'polite');
+                                notificationRegion.innerText = 'Your report has been submitted successfully.';
+                            }
                         });
 
                         const sucksBadgeDiv = document.createElement('div');
@@ -591,6 +633,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'error',
                             title: 'Error',
                             text: data.message || 'An error occurred.',
+                            didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'assertive');
+                                notificationRegion.innerText = data.message || 'An error occurred.';
+                            }
                         });
                     }
                 })
@@ -599,6 +645,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'There was an error submitting your report.',
+                        didOpen: () => {
+                            notificationRegion.setAttribute('aria-live', 'assertive');
+                            notificationRegion.innerText = 'There was an error submitting your report.';
+                        }
                     });
                 });
             }
@@ -630,6 +680,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'success',
                             title: 'Reported',
                             text: 'This apartment has been reported as not available.',
+                            didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'polite');
+                                notificationRegion.innerText = 'This apartment has been reported as not available.';
+                            }
                         });
 
                         const notAvailBadgeDiv = document.createElement('div');
@@ -646,6 +700,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: 'error',
                             title: 'Error',
                             text: data.message || 'An error occurred.',
+                            didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'assertive');
+                                notificationRegion.innerText = data.message || 'An error occurred.';
+                            }
                         });
                     }
                 })
@@ -654,6 +712,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         icon: 'error',
                         title: 'Error',
                         text: 'There was an error submitting your report.',
+                        didOpen: () => {
+                                notificationRegion.setAttribute('aria-live', 'assertive');
+                                notificationRegion.innerText = 'There was an error submitting your report.';
+                            }
                     });
                 });
             }
@@ -774,10 +836,12 @@ document.addEventListener('DOMContentLoaded', function() {
 {% endif %}
 
 {% else %}
-<div class="flex flex-col items-center justify-center pt-4 md:pt-20">
-  <img src="{% static 'undraw_building.svg' %}" class="w-96" alt="No units found."/>
-  <p class="text-xl text-gray-600 dark:text-gray-300 mb-4 mt-10 px-4">Looks like we don't have any apartments for you today. Check back tomorrow!</p>
-</div>
+<section class="flex flex-col items-center justify-center pt-4 md:pt-20">
+    <figure>
+        <img src="{% static 'undraw_building.svg' %}" class="w-96" alt="No units found."/>
+    </figure>
+  <h1 class="text-xl text-gray-600 dark:text-gray-300 mb-4 mt-10 px-4">Looks like we don't have any apartments for you today. Check back tomorrow!</h1>
+</section>
 {% endif %}
 
 

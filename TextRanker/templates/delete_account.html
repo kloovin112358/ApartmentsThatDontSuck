@@ -3,9 +3,9 @@
 {% block title %}Delete Account{% endblock %}
 
 {% block content %}
-<div class="max-w-screen-sm mx-auto p-4">
+<section class="max-w-screen-sm mx-auto p-4">
     <div class="p-6 bg-white border border-gray-200 rounded-lg shadow sm:p-8">
-        <h5 class="text-2xl font-medium text-gray-900 mb-6">Delete Your Account</h5>
+        <h1 class="text-2xl font-medium text-gray-900 mb-6">Delete Your Account</h1>
         <p class="text-gray-700 mb-4">Are you sure you want to delete your account? This action cannot be undone.</p>
         <!-- Delete Button Triggering Modal -->
         <button type="button"
@@ -14,20 +14,20 @@
             Delete Account
         </button>
     </div>
-</div>
+</section>
 
 <!-- Delete Account Modal -->
-<div id="deleteAccountModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center">
+<div id="deleteAccountModal" class="fixed inset-0 z-50 hidden overflow-y-auto bg-gray-900 bg-opacity-50 flex items-center justify-center" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-auto absolute top-16">
-        <h3 class="text-lg font-semibold mb-4">Confirm Account Deletion</h3>
-        <p class="mb-4">Please type your email address <strong>{{ user.email }}</strong> to confirm account deletion.</p>
-        <input type="text" id="confirmEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Type your email" />
+        <h2 class="text-lg font-semibold mb-4" id="deleteModalLabel">Confirm Account Deletion</h2>
+        <label for="confirmEmail">Please type your email address <strong>{{ user.email }}</strong> to confirm account deletion.</label>
+        <input type="text" id="confirmEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg mb-4" placeholder="Type your email" aria-required="true" />
         <div class="flex justify-between">
-            <button id="cancelDelete" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600">Cancel</button>
+            <button type="button" id="cancelDelete" class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600" aria-label="Cancel - don't delete my account">Cancel</button>
             <form id="confirmDeleteForm" method="post" action="{% url 'Ranker:delete_account' %}">
                 {% csrf_token %}
                 <button id="confirmDelete" type="submit" class="px-4 py-2 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-red-500 bg-gray-300 cursor-not-allowed"
-                        disabled>
+                        disabled aria-label="Confirm account deletion">
                     Delete
                 </button>
             </form>
@@ -38,7 +38,11 @@
 <script>
 function openDeleteModal() {
     // Show the modal
+    const modal = document.getElementById('deleteAccountModal');
     document.getElementById('deleteAccountModal').classList.remove('hidden');
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden', 'false');
+    document.querySelector('#confirmEmail').focus();
 
     // Get references to the input field and buttons
     const confirmEmailInput = document.getElementById('confirmEmail');
@@ -60,13 +64,21 @@ function openDeleteModal() {
 
     // Handle the cancel button
     document.getElementById('cancelDelete').addEventListener('click', () => {
-        document.getElementById('deleteAccountModal').classList.add('hidden');
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden', 'true');
+        document.activeElement.blur();
     });
 
     // Handle the form submission
     confirmDeleteForm.addEventListener('submit', (event) => {
         if (confirmEmailInput.value !== '{{ user.email }}') {
             event.preventDefault(); // Prevent form submission
+            // Update the live region for alerting users
+            const liveRegion = document.createElement('div');
+            liveRegion.setAttribute('role', 'alert');
+            liveRegion.textContent = 'Email address does not match. Please type your email to confirm.';
+            document.body.appendChild(liveRegion);
+            setTimeout(() => liveRegion.remove(), 3000); // Remove the live region after 3 seconds
             alert('Email address does not match. Please type your email to confirm.');
         }
     });
