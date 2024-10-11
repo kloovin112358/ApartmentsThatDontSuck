@@ -27,6 +27,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(DisposableEmailDomain)
 admin.site.register(Neighborhood)
+admin.site.register(CityRegion)
 admin.site.register(ListingSite)
 admin.site.register(UnitType)
 admin.site.register(Unit)

@@ -96,9 +96,16 @@ class EmailVerification(models.Model):
             account.save()
         super().save(*args, **kwargs)
 
+class CityRegion(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+
 class Neighborhood(models.Model):
     name = models.CharField(max_length=50)
-    desirability = models.PositiveSmallIntegerField()
+    city_region = models.ForeignKey(CityRegion, blank=True, null=True, on_delete=models.RESTRICT)
+    desirability = models.PositiveSmallIntegerField(blank=True,null=True)
 
     def __str__(self):
         return self.name
@@ -134,24 +141,22 @@ class Unit(models.Model):
         ('Sucks', 'Sucks'),
     ]
 
+    CATEGORY_CHOICES = [
+        ('Frugal', 'Frugal'),
+        ('Value', 'Value'),
+        ('Dream', 'Dream'),
+    ]
+
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    category = models.CharField(max_length=6, choices=CATEGORY_CHOICES, default="Value", blank=True, null=True)
     datetime_added = models.DateTimeField()
     datetime_removed = models.DateTimeField(blank=True, null=True)  # Optional
     neighborhood = models.ForeignKey(Neighborhood, on_delete=models.RESTRICT)
-    # building = models.ForeignKey(Building, on_delete=models.RESTRICT)
-    # unit = models.CharField(max_length=10)
     unitType = models.ForeignKey(UnitType, on_delete=models.RESTRICT)
     listing_site = models.ForeignKey(ListingSite, on_delete=models.RESTRICT, blank=True, null=True)
     listing_link = models.CharField(unique=True, max_length=255)
     price = models.DecimalField(max_digits=8, decimal_places=2)
-    # availability_date = models.DateField()
-    # square_footage = models.PositiveIntegerField()
-    # view_natural_light_rating = models.PositiveSmallIntegerField()
-    # has_dishwasher = models.BooleanField(default=False)
-    # has_in_unit_washer_dryer = models.BooleanField(default=False)
-    # has_air_conditioning = models.BooleanField(default=False)
-    # is_bad_floor_of_building = models.BooleanField(default=False, help_text="If basement, ground floor looking out onto street, or second floor looking out onto busy street.")
-    quality_rating = models.PositiveSmallIntegerField()
+    quality_rating = models.PositiveSmallIntegerField(blank=True, null=True)
     value_rating = models.PositiveSmallIntegerField(blank=True, null=True)
     note = models.TextField(blank=True, null=True)
 
@@ -176,12 +181,12 @@ class Unit(models.Model):
 
     def save(self, *args, **kwargs):
         # Calculate the value_rating before saving the Unit instance
-        newValueRating = self.calculate_value_rating()
-        if newValueRating is not None:
-            if self.value_rating is not None and self.value_rating == newValueRating:
-                pass
-            else:
-                self.value_rating = newValueRating
+        # newValueRating = self.calculate_value_rating()
+        # if newValueRating is not None:
+        #     if self.value_rating is not None and self.value_rating == newValueRating:
+        #         pass
+        #     else:
+        #         self.value_rating = newValueRating
         super(Unit, self).save(*args, **kwargs)
     
 REPORT_STATUS_CHOICES = [

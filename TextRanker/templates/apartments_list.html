@@ -25,7 +25,232 @@
         <span class="sr-only">Loading...</span>
     </div>
 </div>
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
+/>
+<style>
+.choices__list--multiple .choices__item {
+    background-color: rgb(28 100 242);
+    border: 1px solid rgb(28, 60, 242);
+}
+.choices__list--multiple .choices__item.is-highlighted {
+    background-color: rgb(28, 28, 242);
+    border: 1px solid rgb(67, 28, 242);
+}
+</style>
 <section class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
+    <div id="filtersContainer" class="w-full flex justify-center flex-wrap bg-white shadow-lg">
+            <form class="p-2 md:flex md:items-center md:space-x-10 flex-wrap justify-center">
+                <!-- Unit Type Section -->
+                <div class="py-4">
+                    <h3 class="text-lg font-semibold mb-2">Unit Type</h3>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center space-x-2">
+                            <input data-unit-type="studio" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Studio</span>
+                        </label>
+                    
+                        <label class="flex items-center space-x-2">
+                            <input data-unit-type="1-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">1-Bed</span>
+                        </label>
+                    
+                        <label class="flex items-center space-x-2">
+                            <input data-unit-type="2-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">2-Bed</span>
+                        </label>
+                    
+                        <label class="flex items-center space-x-2">
+                            <input data-unit-type="3-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">3-Bed</span>
+                        </label>
+                    </div>
+                    
+                </div>
+    
+                <!-- Price Section -->
+                <div class="py-4">
+                    <h3 class="text-lg font-semibold mb-2">Price (per Month)</h3>
+                    <div class="flex space-x-2">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">$</span>
+                            <input id="minPriceInput" type="number" placeholder="Min Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;">
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-3">$</span>
+                            <input id="maxPriceInput" type="number" placeholder="Max Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;">
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Neighborhood/Region Section -->
+                <div class="py-4">
+                    <div class="flex items-center space-x-4 mb-2">
+                        <!-- Neighborhood Radio Button -->
+                        <label class="inline-flex items-center">
+                            <input checked type="radio" name="locationType" value="neighborhood" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">Neighborhood</span>
+                        </label>
+                    
+                        <!-- Region Radio Button -->
+                        <label class="inline-flex items-center">
+                            <input type="radio" name="locationType" value="region" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
+                            <span class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">City Region</span>
+                        </label>
+                    </div>
+                    
+                    
+                    <div class="dropdown">
+                        <select class="neighborhood-select border border-gray-300 rounded-lg p-2" multiple>
+                            {% for neighborhood in neighborhoods %}
+                            <option value="{{neighborhood.id}}">{{neighborhood.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <!-- Region Checkboxes with Flowbite styles -->
+                    <div class="region-checkboxes hidden">
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="flex items-center space-x-2">
+                                <input data-region="Loop" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Loop</span>
+                            </label>
+                    
+                            <label class="flex items-center space-x-2">
+                                <input data-region="North" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">North</span>
+                            </label>
+                    
+                            <label class="flex items-center space-x-2">
+                                <input data-region="Northwest" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Northwest</span>
+                            </label>
+                    
+                            <label class="flex items-center space-x-2">
+                                <input data-region="West" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">West</span>
+                            </label>
+                    
+                            <label class="flex items-center space-x-2">
+                                <input data-region="Southwest" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Southwest</span>
+                            </label>
+                    
+                            <label class="flex items-center space-x-2">
+                                <input data-region="South" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">South</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                </div>
+    
+                <!-- Submit and Save Search Buttons -->
+                <div class="py-4">
+                    <button id="filterBtn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Filter</button>
+                    <button id="clearFiltersBtn" type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Clear Filters</button>
+                    <button id="saveSearchBtn" type="button" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">Save Search</button>
+                </div>
+            </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
+    <!-- Tailwind Responsive Collapse (Navbar Style) -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize Choices.js for Neighborhood multi-select
+            
+        
+            // Radio buttons for toggling between Neighborhood and Region
+            const neighborhoodRadio = document.querySelector('input[name="locationType"][value="neighborhood"]');
+            const regionRadio = document.querySelector('input[name="locationType"][value="region"]');
+        
+            const dropdownMenu = document.querySelector('.dropdown');
+            const regionCheckboxes = document.querySelector('.region-checkboxes');
+        
+            // Initialize with Neighborhood dropdown visible
+            dropdownMenu.classList.remove('hidden');
+            regionCheckboxes.classList.add('hidden');
+        
+            // Event listener for Neighborhood radio
+            neighborhoodRadio.addEventListener('change', function () {
+                if (neighborhoodRadio.checked) {
+                    dropdownMenu.classList.remove('hidden');
+                    regionCheckboxes.classList.add('hidden');
+                }
+            });
+        
+            // Event listener for Region radio
+            regionRadio.addEventListener('change', function () {
+                if (regionRadio.checked) {
+                    dropdownMenu.classList.add('hidden');
+                    regionCheckboxes.classList.remove('hidden');
+                }
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function () {
+            const filterBtn = document.getElementById('filterBtn');
+        
+            // Function to get filters and send AJAX request
+            const filterUnits = () => {
+                // Get Unit Type Filters
+                const unitTypeCheckboxes = document.querySelectorAll('.unitTypeCheckbox:checked');
+                const unitTypeFilters = Array.from(unitTypeCheckboxes).map(checkbox => checkbox.dataset.unitType);
+        
+                // Get Min and Max Prices
+                const minPrice = document.getElementById('minPriceInput').value;
+                const maxPrice = document.getElementById('maxPriceInput').value;
+        
+                // Determine Selected Location Type and Get Relevant Filters
+                const locationType = document.querySelector('input[name="locationType"]:checked').value;
+                let locationFilters = [];
+                if (locationType === 'neighborhood') {
+                    const neighborhoodSelect = new Choices('.neighborhood-select', {
+                        removeItemButton: true,
+                        searchEnabled: false,
+                        placeholderValue: 'Select neighborhoods'
+                    });
+                    locationFilters = neighborhoodSelect.getValue(true).map(item => item.value);
+                } else if (locationType === 'region') {
+                    const regionCheckboxes = document.querySelectorAll('.regionCheckbox:checked');
+                    locationFilters = Array.from(regionCheckboxes).map(checkbox => checkbox.dataset.region);
+                }
+        
+                // Prepare data for AJAX
+                const params = new URLSearchParams({
+                    unit_types: JSON.stringify(unitTypeFilters), // JSON stringify to ensure it's an array in the query string
+                    min_price: minPrice,
+                    max_price: maxPrice,
+                    locations: JSON.stringify(locationFilters), // JSON stringify to ensure it's an array in the query string
+                    location_type: locationType
+                });
+        
+                // Send AJAX Request
+                fetch(`{% url "Ranker:ajax_get_units" %}?${params.toString()}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle response data (update your UI accordingly)
+                    console.log(data);
+                })
+                .catch(error => console.error('Error:', error));
+            };
+        
+            // Event Listener for Filter Button
+            filterBtn.addEventListener('click', filterUnits);
+        
+            // Run filter on page load
+            filterUnits();
+        });
+        
+        
+    </script>
+    
     <div class="px-2 pt-4 pb-24">
         {% if request.user.is_authenticated %}
         <div class="max-w-md flex items-center space-x-2 mb-3">
@@ -102,6 +327,14 @@
                             </svg>
                         </span>
                     </th>
+                    {% comment %}<th scope="col">
+                        <span class="flex items-center">
+                            Category
+                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                            </svg>
+                        </span>
+                    </th>{% endcomment %}
                     <th scope="col">
                         <span class="flex items-center">
                             Price/Mo
@@ -110,7 +343,7 @@
                             </svg>
                         </span>
                     </th>
-                    <th scope="col">
+                    {% comment %}<th scope="col">
                         <span class="flex items-center">
                             Quality
                             <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -125,7 +358,7 @@
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
                             </svg>
                         </span>
-                    </th>
+                    </th>{% endcomment %}
                     <th scope="col">
                         <span class="flex items-center">
                             Link
@@ -175,8 +408,9 @@
                     <td>{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
                     <td class="font-bold">{{unit.unitType}}</td>
                     <td class="font-bold">{{unit.neighborhood}}</td>
+                    {% comment %}<td class="font-bold">{{unit.category}}</td>{% endcomment %}
                     <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
-                    <td class="
+                    {% comment %}<td class="
                         {% if unit.quality_rating == 1 %}
                             bg-red-300 text-red-700
                         {% elif unit.quality_rating == 2 %}
@@ -231,7 +465,7 @@
                         font-bold
                     ">
                         {{ unit.value_rating }}/10
-                    </td>
+                    </td> {% endcomment %}
                     <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
                 </tr>
                 {% endfor %}
@@ -263,6 +497,16 @@
                 <select id="neighborhood" name="neighborhood" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
                     {% for neighborhood in neighborhoods %}
                     <option value="{{neighborhood.id}}">{{neighborhood.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Category -->
+            <div class="mb-4">
+                <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                <select id="category" name="category" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+                    {% for category in categories %}
+                    <option value="{{category.1}}">{{category.1}}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -313,6 +557,7 @@
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
 <script>
 let selectedRadioId = null;
+
 
 // Function to store selected radio ID
 function storeSelectedRadio() {
@@ -366,11 +611,24 @@ document.addEventListener('DOMContentLoaded', function () {
             const contentContainer = document.getElementById("pageContentContainer");
             contentContainer.classList.remove('hidden');
             contentContainer.setAttribute('aria-live', 'polite');
+            // Select all radio buttons with a specific class or name
+            const radioButtons = document.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach((radio) => {
+            radio.addEventListener('change', (event) => {
+                if (radio.checked) {
+                    selectedRadioId = radio.id
+                }
+            });
+            });
         });
         dataTable.on('datatable.pager', storeSelectedRadio);
         dataTable.on('datatable.sort', storeSelectedRadio);
         dataTable.on('datatable.search', storeSelectedRadio);
         dataTable.on('datatable.update', () => {
+            const checkedRadio = document.querySelector('input[type="radio"]:checked');
+            if (checkedRadio) {
+                checkedRadio.checked = false;
+            }
             if (selectedRadioId) {
                 const radioToSelect = document.getElementById(selectedRadioId);
                 if (radioToSelect) {
@@ -732,6 +990,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 document.getElementById('unitId').value = data.unitId;
+                document.getElementById('category').value = data.category;
                 document.getElementById('status').value = data.status;
                 document.getElementById('neighborhood').value = data.neighborhood_id;
                 document.getElementById('unitType').value = data.unitType_id;

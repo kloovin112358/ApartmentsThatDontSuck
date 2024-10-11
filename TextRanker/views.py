@@ -46,10 +46,12 @@ from django.contrib.auth.decorators import user_passes_test
 #     return render(request, 'verify_email.html')
 
 def is_user_staff(user):
-    return user.is_user_account_valid_and_verified_and_staff()
+    if user.is_authenticated:
+        return user.is_user_account_valid_and_verified_and_staff()
 
 def is_user_verified(user):
-    return user.is_user_account_valid_and_verified()
+    if user.is_authenticated:
+        return user.is_user_account_valid_and_verified()
 
 class LogoutView(RedirectView):
     url = reverse_lazy('Ranker:home')  # Redirect to home or any other page after logout
@@ -73,14 +75,15 @@ def ApartmentsList(request):
             is_saved=Exists(saved_units),
             is_sucks_reported=Exists(sucks_reports),
             is_not_available_reported=Exists(not_available_reports)
-        ).order_by('-is_saved', '-is_sucks_reported', '-is_not_available_reported')
+        ).order_by('-is_saved', '-datetime_added', '-is_sucks_reported', '-is_not_available_reported')
     else:
-        units = Unit.objects.filter(status="Live")
+        units = Unit.objects.filter(status="Live").order_by('-datetime_added')
     status_choices = [{'value': c[0], 'label': c[1]} for c in Unit.status.field.choices]
 
     return render(request, "apartments_list.html", {
         "units": units,
         "unit_statuses": status_choices,
+        "categories": Unit.CATEGORY_CHOICES,
         'neighborhoods': Neighborhood.objects.all(),
         'unit_types': UnitType.objects.all()
     })
@@ -131,7 +134,8 @@ def apartmentSearches(request):
         )
     )
     neighborhoods = Neighborhood.objects.filter().order_by('name')
-    return render(request, "searches.html", {"unitTypes": unitTypes, "neighborhoods": neighborhoods})
+    categories = Unit.CATEGORY_CHOICES
+    return render(request, "searches.html", {"unitTypes": unitTypes, "neighborhoods": neighborhoods, "categories": categories})
 
 def send_verification_email(requestedUser):
     verifEmailInst, created = EmailVerification.objects.get_or_create(account=requestedUser)
@@ -225,7 +229,7 @@ class MyAccountView(LoginRequiredMixin, TemplateView):
         )
 
         # Annotate the SavedUnit queryset
-        saved_units = SavedUnit.objects.filter(user=self.request.user).annotate(
+        saved_units = SavedUnit.objects.filter(user=self.request.user, unit__status="Live").annotate(
             has_sucks_report=Exists(sucks_report_exists),
             has_not_available_report=Exists(not_available_report_exists)
         )
@@ -294,6 +298,55 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         context = super().get_context_data(**kwargs)
         context['password_help_text'] = password_validators_help_text_html()
         return context
+    
+def ajax_get_units(request):
+    # Extract the query parameters from the request
+    unit_types = request.GET.get('unit_types')
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+    locations = request.GET.get('locations')
+    location_type = request.GET.get('location_type')
+
+    # Parse the JSON strings back to Python objects (lists)
+    if unit_types:
+        try:
+            unit_types = json.loads(unit_types)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid unit_types parameter'}, status=400)
+
+    if locations:
+        try:
+            locations = json.loads(locations)
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'error': 'Invalid locations parameter'}, status=400)
+
+    # Handle the case where min_price or max_price is missing
+    if min_price is not None:
+        try:
+            min_price = float(min_price)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'Invalid min_price parameter'}, status=400)
+
+    if max_price is not None:
+        try:
+            max_price = float(max_price)
+        except ValueError:
+            return JsonResponse({'success': False, 'error': 'Invalid max_price parameter'}, status=400)
+
+    # Now you have all your parameters parsed, you can use them to query your database
+    # Example (dummy response):
+    units = []  # Replace this with the actual logic to get units
+
+    # Respond with the data
+    return JsonResponse({
+        'success': True,
+        'units': units,
+        'unit_types': unit_types,
+        'min_price': min_price,
+        'max_price': max_price,
+        'locations': locations,
+        'location_type': location_type,
+    })
 
 @user_passes_test(is_user_staff)
 @login_required
@@ -301,9 +354,10 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
 def ajax_add_unit(request):
     # Extract form data
     unit_type_id = request.POST.get('unit-type')
+    # category = request.POST.get('category')
     neighborhood_id = request.POST.get('neighborhood')
     price = request.POST.get('price')
-    quality_rating = request.POST.get('quality-rating')
+    # quality_rating = request.POST.get('quality-rating')
     link = request.POST.get('link')
 
     # Validate data and create model instance
@@ -318,7 +372,8 @@ def ajax_add_unit(request):
             unitType=unit_type,
             listing_link=link,
             price=price,
-            quality_rating=quality_rating
+            # category=category,
+            # quality_rating=quality_rating
         )
         unit.save()
 
@@ -603,6 +658,7 @@ def ajax_get_unit_details(request, unit_id):
                 "unitType_id": unit.unitType.id,
                 "listingLink": unit.listing_link,
                 "price": unit.price,
+                "category": unit.category,
                 "qualityRating": unit.quality_rating,
                 "note": unit.note
             })

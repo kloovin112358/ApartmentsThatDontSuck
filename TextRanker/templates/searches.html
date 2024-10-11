@@ -14,6 +14,16 @@
             <h2 class="text-xl font-semibold mb-4">Add Apartment to Database</h2>
             <form>
                 {% csrf_token %}
+                <!-- Category Field -->
+              {% comment %}<div class="mb-4">
+                <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+                <select required id="category-dropdown" name="category" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md">
+                  <!-- Add options dynamically from the UnitType model -->
+                  {% for category in categories %}
+                    <option value="{{category.1}}" {% if category.1 == 'Value' %}selected{% endif %}>{{category.1}}</option>
+                  {% endfor %}
+                </select>
+              </div>{% endcomment %}
                  <!-- UnitType Field -->
               <div class="mb-4">
                 <label for="unit-type" class="block text-sm font-medium text-gray-700">Unit Type</label>
@@ -43,7 +53,7 @@
               </div>
       
               <!-- Quality Rating Field -->
-              <div class="mb-4">
+              <!-- <div class="mb-4">
                 <label for="quality-rating" class="block text-sm font-medium text-gray-700">Quality Rating</label>
                 <input type="range" id="quality-rating" name="quality-rating" min="1" max="10" value="5" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 <div class="flex justify-between text-xs text-gray-500 mt-1">
@@ -58,7 +68,7 @@
                   <span>9</span>
                   <span>10</span>
                 </div>
-              </div>
+              </div> -->
 
       
               <!-- Link Field -->

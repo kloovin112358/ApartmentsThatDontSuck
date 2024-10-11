@@ -21,7 +21,7 @@ urlpatterns = [
     # admin pages
     path("maintenance/reports/", ReportsList, name="reports"),
     path("maintenance/searches/", apartmentSearches, name="searches"),
-    path("maintenance/value_matrix/", valueMatrix, name="value_matrix"),
+    # path("maintenance/value_matrix/", valueMatrix, name="value_matrix"),
 
     # login/logout/signup
     path("login/", CustomUserLoginView.as_view(), name="login_page"),
@@ -46,6 +46,7 @@ urlpatterns = [
     path('ajax/sucks_unit/', ajax_sucks_unit, name='ajax_sucks_unit'),
     path('ajax/contact_form/', ajax_contact_form, name='ajax_contact_form'),
     path('ajax/save_note/', ajax_save_note, name="ajax_save_note"),
+    path('ajax/get_units/', ajax_get_units, name="ajax_get_units"),
 
     #staff URLs
     path('ajax/add_unit/', ajax_add_unit, name='ajax_add_unit'),

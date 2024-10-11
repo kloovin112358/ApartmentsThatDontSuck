@@ -35,7 +35,7 @@ class CustomUserChangeForm(UserChangeForm):
 class UnitUpdateForm(forms.ModelForm):
     class Meta:
         model = Unit
-        fields = ['status', 'neighborhood', 'unitType', 'listing_link', 'price', 'quality_rating', 'note']
+        fields = ['status', "category", 'neighborhood', 'unitType', 'listing_link', 'price', 'quality_rating', 'note']
 
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True

@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand
-from TextRanker.models import Neighborhood
+from TextRanker.models import Neighborhood, CityRegion
 
 class Command(BaseCommand):
     help = 'Add all Chicago neighborhoods to the Neighborhood model'
@@ -32,6 +32,21 @@ class Command(BaseCommand):
             {"name": "North Center", "desirability": 6},
             {"name": "Roscoe Village", "desirability": 6},
         ]
+        cityRegions = [
+            "Loop",
+            "North",
+            "Northwest",
+            "West",
+            "Southwest",
+            "South"
+        ]
+
+        for cityRegion in cityRegions:
+            obj, created = CityRegion.objects.get_or_create(name=cityRegion)
+            if created:
+                self.stdout.write(self.style.SUCCESS(f"Added {cityRegion}"))
+            else:
+                self.stdout.write(self.style.WARNING(f"{cityRegion} already exists"))
 
         for neighborhood in neighborhoods:
             obj, created = Neighborhood.objects.get_or_create(name=neighborhood['name'], defaults={'desirability': neighborhood['desirability']})
