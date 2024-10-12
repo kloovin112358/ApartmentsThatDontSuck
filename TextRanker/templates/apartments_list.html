@@ -14,17 +14,7 @@
 <!-- aria-live region for screen readers -->
 <div id="notification-region" aria-live="assertive" class="sr-only"></div>
 
-{% if units %}
-<!-- Spinner Container -->
-<div role="status" id="spinner" class="container mx-auto mt-4 hidden">
-    <div class="flex justify-center align-center">
-        <svg aria-hidden="true" class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-purple-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-            <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-        </svg>
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
+
 <link
   rel="stylesheet"
   href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css"
@@ -39,32 +29,33 @@
     border: 1px solid rgb(67, 28, 242);
 }
 </style>
-<section class="max-w-screen-3xl mx-auto hidden" id="pageContentContainer">
-    <div id="filtersContainer" class="w-full flex justify-center flex-wrap bg-white shadow-lg">
+<section class="max-w-screen-3xl mx-auto" id="pageContentContainer">
+    <div id="filtersContainer" class="bg-white shadow-lg">
+        <div class="w-full flex justify-center flex-wrap">
             <form class="p-2 md:flex md:items-center md:space-x-10 flex-wrap justify-center">
                 <!-- Unit Type Section -->
                 <div class="py-4">
                     <h3 class="text-lg font-semibold mb-2">Unit Type</h3>
                     <div class="flex space-x-4">
-                        <label class="flex items-center space-x-2">
-                            <input data-unit-type="studio" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Studio</span>
-                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input id="studioCheckbox" name="studioCheckbox" data-unit-type="Studio" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <label for="studioCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">Studio</label>
+                        </div>
                     
-                        <label class="flex items-center space-x-2">
-                            <input data-unit-type="1-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">1-Bed</span>
-                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input id="1bedcheckbox" name="1bedcheckbox" data-unit-type="1-Bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <label for="1bedcheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">1-Bed</label>
+                        </div>
                     
-                        <label class="flex items-center space-x-2">
-                            <input data-unit-type="2-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">2-Bed</span>
-                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input id="2bedCheckbox" name="2bedCheckbox" data-unit-type="2-Bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <label for="2bedCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">2-Bed</label>
+                        </div>
                     
-                        <label class="flex items-center space-x-2">
-                            <input data-unit-type="3-bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                            <span class="text-sm font-medium text-gray-900 dark:text-gray-300">3-Bed</span>
-                        </label>
+                        <div class="flex items-center space-x-2">
+                            <input id="3bedCheckbox" name="3bedCheckbox" data-unit-type="3-Bedroom" type="checkbox" class="unitTypeCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                            <label for="3bedCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">3-Bed</label>
+                        </div>
                     </div>
                     
                 </div>
@@ -75,11 +66,11 @@
                     <div class="flex space-x-2">
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3">$</span>
-                            <input id="minPriceInput" type="number" placeholder="Min Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;">
+                            <input aria-label="Minimum Price" id="minPriceInput" type="number" placeholder="Min Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;" min="0" max="99999">
                         </div>
                         <div class="relative">
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3">$</span>
-                            <input id="maxPriceInput" type="number" placeholder="Max Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;">
+                            <input aria-label="Maximum Price" id="maxPriceInput" type="number" placeholder="Max Price" class="pl-8 pr-4 py-2 border border-gray-300 rounded-lg text-s" style="max-width:8.5rem;" min="0" max="99999">
                         </div>
                     </div>
                 </div>
@@ -88,21 +79,21 @@
                 <div class="py-4">
                     <div class="flex items-center space-x-4 mb-2">
                         <!-- Neighborhood Radio Button -->
-                        <label class="inline-flex items-center">
-                            <input checked type="radio" name="locationType" value="neighborhood" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
-                            <span class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">Neighborhood</span>
-                        </label>
+                        <div class="inline-flex items-center">
+                            <input type="radio" id="locationTypeRadioNeighborhood" name="locationType" value="neighborhood" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600" checked="checked" />
+                            <label for="locationTypeRadioNeighborhood" class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">Neighborhood</label>
+                        </div>
                     
                         <!-- Region Radio Button -->
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="locationType" value="region" class="form-radio h-4 w-4 text-blue-600 transition duration-150 ease-in-out">
-                            <span class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">City Region</span>
-                        </label>
+                        <div class="inline-flex items-center">
+                            <input type="radio" id="locationTypeRadioRegion" name="locationType" value="region" class="w-4 h-4 border-gray-300 focus:ring-2 focus:ring-blue-300 dark:focus:ring-blue-600 dark:focus:bg-blue-600 dark:bg-gray-700 dark:border-gray-600" />
+                            <label for="locationTypeRadioRegion" class="ms-2 text-gray-900 dark:text-gray-300 text-lg font-semibold">City Region</label>
+                        </div>
                     </div>
                     
                     
                     <div class="dropdown">
-                        <select class="neighborhood-select border border-gray-300 rounded-lg p-2" multiple>
+                        <select id="neighborhood-select" class="neighborhood-select border border-gray-300 rounded-lg p-2" aria-label="Neighborhoods filter" multiple>
                             {% for neighborhood in neighborhoods %}
                             <option value="{{neighborhood.id}}">{{neighborhood.name}}</option>
                             {% endfor %}
@@ -110,37 +101,27 @@
                     </div>
                     
                     <!-- Region Checkboxes with Flowbite styles -->
-                    <div class="region-checkboxes hidden">
-                        <div class="grid grid-cols-3 gap-3">
-                            <label class="flex items-center space-x-2">
-                                <input data-region="Loop" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Loop</span>
-                            </label>
+                    <div class="region-checkboxes flex align-items-center hidden" style="min-height:49.85px;">
+                        <div class="flex gap-3">
+                            <div class="flex items-center space-x-2">
+                                <input id="loopCheckbox" name="loopCheckbox" data-region="Loop" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <label for="loopCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">Loop</label>
+                            </div>
                     
-                            <label class="flex items-center space-x-2">
-                                <input data-region="North" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">North</span>
-                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input id="northCheckbox" name="northCheckbox" data-region="North" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <label for="northCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">North</label>
+                            </div>
                     
-                            <label class="flex items-center space-x-2">
-                                <input data-region="Northwest" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Northwest</span>
-                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input id="westCheckbox" name="westCheckbox" data-region="West" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <label for="westCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">West</label>
+                            </div>
                     
-                            <label class="flex items-center space-x-2">
-                                <input data-region="West" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">West</span>
-                            </label>
-                    
-                            <label class="flex items-center space-x-2">
-                                <input data-region="Southwest" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">Southwest</span>
-                            </label>
-                    
-                            <label class="flex items-center space-x-2">
-                                <input data-region="South" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
-                                <span class="text-sm font-medium text-gray-900 dark:text-gray-300">South</span>
-                            </label>
+                            <div class="flex items-center space-x-2">
+                                <input id="southCheckbox" name="southCheckbox" data-region="South" type="checkbox" class="regionCheckbox form-checkbox text-blue-600 rounded focus:ring focus:ring-blue-300 dark:focus:ring-blue-800">
+                                <label for="southCheckbox" class="text-sm font-medium text-gray-900 dark:text-gray-300">South</label>
+                            </div>
                         </div>
                     </div>
                     
@@ -150,82 +131,266 @@
                 <div class="py-4">
                     <button id="filterBtn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Filter</button>
                     <button id="clearFiltersBtn" type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Clear Filters</button>
-                    <button id="saveSearchBtn" type="button" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">Save Search</button>
+                    {% if showLoggedInRequiredItems %}<button id="saveSearchBtn" type="button" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">Save Search</button>{% endif %}
                 </div>
             </form>
+        </div>
+        {% if showLoggedInRequiredItems and savedSearches %}
+        <div class="border-t border-gray-300 p-4">
+            {% if savedSearches %}
+                <ul class="flex flex-wrap justify-center space-x-4">
+                    {% for savedSearch in savedSearches %}
+                        <li class="flex items-center">
+                            <a href="{{ savedSearch.search }}" class="savedSearchURL mx-1 text-blue-600 hover:underline">{{ savedSearch.search_name }}</a>
+                            <button class="editSavedSearchBtn" data-for="{{savedSearch.id}}" aria-label="Edit saved search {{ savedSearch.search_name }}">
+                                <svg aria-hidden="true" class="w-6 h-6 text-gray-600 hover:text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                </svg>
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+        {% endif %}
     </div>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-    <!-- Tailwind Responsive Collapse (Navbar Style) -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            // Initialize Choices.js for Neighborhood multi-select
-            
-        
-            // Radio buttons for toggling between Neighborhood and Region
+        document.addEventListener('DOMContentLoaded', function () {
             const neighborhoodRadio = document.querySelector('input[name="locationType"][value="neighborhood"]');
             const regionRadio = document.querySelector('input[name="locationType"][value="region"]');
-        
             const dropdownMenu = document.querySelector('.dropdown');
             const regionCheckboxes = document.querySelector('.region-checkboxes');
         
             // Initialize with Neighborhood dropdown visible
             dropdownMenu.classList.remove('hidden');
             regionCheckboxes.classList.add('hidden');
-        
-            // Event listener for Neighborhood radio
-            neighborhoodRadio.addEventListener('change', function () {
+
+            function checkNeighborhoodRadio() {
                 if (neighborhoodRadio.checked) {
                     dropdownMenu.classList.remove('hidden');
                     regionCheckboxes.classList.add('hidden');
                 }
-            });
-        
-            // Event listener for Region radio
-            regionRadio.addEventListener('change', function () {
+            }
+
+            function checkRegionRadio() {
                 if (regionRadio.checked) {
                     dropdownMenu.classList.add('hidden');
                     regionCheckboxes.classList.remove('hidden');
                 }
+            }
+
+            // Event listener for Neighborhood radio
+            neighborhoodRadio.addEventListener('change', function () {
+                checkNeighborhoodRadio()
             });
-        });
-        document.addEventListener('DOMContentLoaded', function () {
+        
+            // Event listener for Region radio
+            regionRadio.addEventListener('change', function () {
+                checkRegionRadio()
+            });
             const filterBtn = document.getElementById('filterBtn');
-        
-            // Function to get filters and send AJAX request
-            const filterUnits = () => {
-                // Get Unit Type Filters
-                const unitTypeCheckboxes = document.querySelectorAll('.unitTypeCheckbox:checked');
-                const unitTypeFilters = Array.from(unitTypeCheckboxes).map(checkbox => checkbox.dataset.unitType);
-        
-                // Get Min and Max Prices
-                const minPrice = document.getElementById('minPriceInput').value;
-                const maxPrice = document.getElementById('maxPriceInput').value;
-        
-                // Determine Selected Location Type and Get Relevant Filters
-                const locationType = document.querySelector('input[name="locationType"]:checked').value;
-                let locationFilters = [];
-                if (locationType === 'neighborhood') {
-                    const neighborhoodSelect = new Choices('.neighborhood-select', {
-                        removeItemButton: true,
-                        searchEnabled: false,
-                        placeholderValue: 'Select neighborhoods'
-                    });
-                    locationFilters = neighborhoodSelect.getValue(true).map(item => item.value);
-                } else if (locationType === 'region') {
-                    const regionCheckboxes = document.querySelectorAll('.regionCheckbox:checked');
-                    locationFilters = Array.from(regionCheckboxes).map(checkbox => checkbox.dataset.region);
+            const neighborhoodSelect = new Choices('#neighborhood-select', {
+                removeItemButton: true,
+                searchEnabled: false,
+                placeholderValue: 'Select neighborhoods'
+            });
+            let params = new URLSearchParams();
+
+            function setQueryParamsFromURL() {
+                params = new URLSearchParams(window.location.search);
+            }
+
+            const notificationRegion = document.getElementById('notification-region');
+            const spinner = document.getElementById("spinner")
+            const resultTable = document.getElementById("resultContent")
+            const unitActionContainer = document.getElementById("unitActionContainer")
+
+            function hideTableAndExtras() {
+                resultTable.classList.add('hidden')
+                resultTable.setAttribute('aria-hidden', 'true');
+                resultTable.innerHTML = ""
+                if (unitActionContainer) {
+                    unitActionContainer.classList.add('hidden')
+                    unitActionContainer.setAttribute('aria-hidden', 'true');
                 }
-        
-                // Prepare data for AJAX
-                const params = new URLSearchParams({
-                    unit_types: JSON.stringify(unitTypeFilters), // JSON stringify to ensure it's an array in the query string
-                    min_price: minPrice,
-                    max_price: maxPrice,
-                    locations: JSON.stringify(locationFilters), // JSON stringify to ensure it's an array in the query string
-                    location_type: locationType
-                });
-        
+                
+                spinner.classList.remove('hidden')
+                spinner.removeAttribute('aria-hidden')
+            }
+
+            function unhideTableAndExtras() {
+                spinner.classList.add('hidden')
+                spinner.setAttribute('aria-hidden', 'true');
+                resultTable.classList.remove('hidden')
+                resultTable.removeAttribute('aria-hidden')
+                if (!(document.getElementById("404Result")) && unitActionContainer) {
+                    unitActionContainer.classList.remove('hidden')
+                    unitActionContainer.removeAttribute('aria-hidden')
+                }
+            }
+
+            function loadNewContent(data) {
+                document.getElementById("resultContent").innerHTML = data.html
+                if (document.getElementById("filter-table") && typeof simpleDatatables.DataTable !== 'undefined') {
+                    const dataTable = new simpleDatatables.DataTable("#filter-table", {
+                        tableRender: (_data, table, type) => {
+                            if (type === "print") {
+                                return table;
+                            }
+            
+                            return table;
+                        }
+                    });
+                    // Hide the spinner once the DataTable is initialized
+                    dataTable.on("datatable.init", () => {
+                        
+                        // Select all radio buttons with a specific class or name
+                        const radioButtons = document.querySelectorAll('input[type="radio"][name="select-radio"]');
+                        radioButtons.forEach((radio) => {
+                        radio.addEventListener('change', (event) => {
+                            if (radio.checked) {
+                                selectedRadioId = radio.id
+                            }
+                        });
+                        });
+                    });
+                    dataTable.on('datatable.pager', storeSelectedRadio);
+                    dataTable.on('datatable.sort', storeSelectedRadio);
+                    dataTable.on('datatable.search', storeSelectedRadio);
+                    dataTable.on('datatable.update', () => {
+                        const checkedRadio = document.querySelector('input[type="radio"][name="select-radio"]:checked');
+                        if (checkedRadio) {
+                            checkedRadio.checked = false;
+                        }
+                        if (selectedRadioId) {
+                            const radioToSelect = document.getElementById(selectedRadioId);
+                            if (radioToSelect) {
+                                radioToSelect.checked = true;
+                            }
+                        }
+                    });
+                }
+                unhideTableAndExtras()
+            }
+            
+            // Function to get filters and send AJAX request
+            const filterUnits = (initialPageLoad) => {
+                hideTableAndExtras()
+                
+                if (!initialPageLoad) {
+                    params = new URLSearchParams();
+                    // Get Unit Type Filters
+                    const unitTypeCheckboxes = document.querySelectorAll('.unitTypeCheckbox:checked');
+                    const unitTypeFilters = Array.from(unitTypeCheckboxes).map(checkbox => checkbox.dataset.unitType);
+            
+                    // Get Min and Max Prices
+                    const minPrice = document.getElementById('minPriceInput').value;
+                    const maxPrice = document.getElementById('maxPriceInput').value;
+            
+                    // Determine Selected Location Type and Get Relevant Filters
+                    const locationType = document.querySelector('input[name="locationType"]:checked').value;
+                    let locationFilters = [];
+                    if (locationType === 'neighborhood') {
+                        locationFilters = neighborhoodSelect.getValue(true)
+                    } else if (locationType === 'region') {
+                        const regionCheckboxes = document.querySelectorAll('.regionCheckbox:checked');
+                        locationFilters = Array.from(regionCheckboxes).map(checkbox => checkbox.dataset.region);
+                    }
+            
+                    // Prepare data for AJAX
+                    if (unitTypeFilters && unitTypeFilters.length) {
+                        params.append('unit_types', JSON.stringify(unitTypeFilters));
+                    } else {
+                        params.delete('unit_types')
+                    }
+
+                    if (minPrice) {
+                        params.append('min_price', minPrice);
+                    } else {
+                        params.delete('min_price')
+                    }
+
+                    if (maxPrice) {
+                        params.append('max_price', maxPrice);
+                    } else {
+                        params.delete('max_price')
+                    }
+
+                    if (locationType && locationFilters && locationFilters.length) {
+                        params.append('location_filter_type', locationType);
+                        params.append('locations', JSON.stringify(locationFilters));
+                    } else {
+                        params.delete('location_filter_type')
+                        params.delete('locations')
+                    }
+
+                } else {
+                    setQueryParamsFromURL()
+                    const locationFilterType = params.get('location_filter_type')
+                    const minPrice = params.get('min_price')
+                    const maxPrice = params.get('max_price')
+                    let unitTypes = params.get('unit_types')
+                    let locations = params.get('locations')
+                    try {
+                        if (minPrice) {
+                            document.getElementById('minPriceInput').value = minPrice; 
+                        }
+                    } catch (error) {
+                        console.error('Error setting minPriceInput:', error);
+                        document.getElementById('minPriceInput').value = ""
+                        params.delete('minPrice')
+                    }
+                    
+                    try {
+                        if (maxPrice) {
+                            document.getElementById('maxPriceInput').value = maxPrice;
+                        }
+                    } catch (error) {
+                        console.error('Error setting maxPriceInput:', error);
+                        params.delete('maxPrice')
+                    }
+                    if (unitTypes) {
+                        unitTypes = JSON.parse(unitTypes)
+                        const unitTypeCheckboxesAll = document.querySelectorAll(".unitTypeCheckbox")
+                        unitTypes.forEach(unitType => {
+                            // Loop through each checkbox
+                            unitTypeCheckboxesAll.forEach(checkbox => {
+                                if (checkbox.getAttribute('data-unit-type') === unitType) {
+                                    checkbox.checked = true; // Check the checkbox if there's a match
+                                }
+                            });
+                        });
+                    }
+                    if (locationFilterType) {
+                        if (locationFilterType == "neighborhood") {
+                            document.getElementById("locationTypeRadioNeighborhood").checked = true
+                            if (locations) {
+                                locations = JSON.parse(locations)
+                                neighborhoodSelect.setChoiceByValue(locations); // Pass the entire array
+                            } 
+                            checkNeighborhoodRadio()                           
+                        } else if (locationFilterType == "region") {
+                            document.getElementById("locationTypeRadioRegion").checked = true
+                            if (locations) {
+                                locations = JSON.parse(locations)
+                                // Get all checkboxes with the class 'regionCheckbox'
+                                const regionCheckboxes = document.querySelectorAll('.regionCheckbox');
+                                // Loop through locations array
+                                locations.forEach(location => {
+                                    // Loop through each checkbox
+                                    regionCheckboxes.forEach(checkbox => {
+                                        if (checkbox.getAttribute('data-region') === location) {
+                                            checkbox.checked = true; // Check the checkbox if there's a match
+                                        }
+                                    });
+                                });
+                            }
+                            checkRegionRadio()  
+                        }
+                    }
+                }
                 // Send AJAX Request
                 fetch(`{% url "Ranker:ajax_get_units" %}?${params.toString()}`, {
                     method: 'GET',
@@ -235,35 +400,233 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    loadNewContent(data)
                     // Handle response data (update your UI accordingly)
-                    console.log(data);
+                    const stringParams = params.toString()
+                    let newUrl = `{% url "Ranker:home" %}`
+                    if (stringParams.length !== 0) {
+                        newUrl = newUrl + `?${stringParams}`;
+                    }
+                    window.history.pushState({ path: newUrl }, '', newUrl);
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    window.location.href = `{% url "Ranker:home" %}`
+                });
             };
         
             // Event Listener for Filter Button
-            filterBtn.addEventListener('click', filterUnits);
+            filterBtn.addEventListener('click', function() {
+                filterUnits(false);
+            });
+
+            document.getElementById("clearFiltersBtn").addEventListener('click', function() {
+                window.location.href = "{% url 'Ranker:home' %}"
+            });
+            //{% if showLoggedInRequiredItems %}
+            function launchSaveSearchModal() {
+                Swal.fire({
+                    title: 'Save Search',
+                    text: 'The active search will be saved to your account.',
+                    input: 'text',
+                    inputLabel: "Please provide a name for this search.",
+                    inputPlaceholder: 'Ex: Logan Square 2-Beds',
+                    inputAttributes: {
+                        'aria-label': 'Provide a name for this search.',
+                        'maxlength': '40'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Save Search',
+                    preConfirm: (search_name) => {
+                        if (!search_name) {
+                            Swal.showValidationMessage('Please enter a search name.');
+                        }
+                        return search_name;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("{% url 'Ranker:ajax_save_search' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 'search_name': result.value, 'search': window.location.href })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload()
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'An error occurred.',
+                                    didOpen: () => {
+                                        notificationRegion.setAttribute('aria-live', 'assertive');
+                                        notificationRegion.innerText = data.message || 'An error occurred.';
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'There was an error submitting your request.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'assertive');
+                                    notificationRegion.innerText = 'There was an error submitting your request.';
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+            document.getElementById("saveSearchBtn").addEventListener('click', function() {
+                filterUnits(false);
+                launchSaveSearchModal();
+            });
+            //{% endif %}
         
             // Run filter on page load
-            filterUnits();
+            filterUnits(true);
+            //{% if showLoggedInRequiredItems and savedSearches %}
+            // Select all buttons with the class editSavedSearchBtn
+            const editButtons = document.querySelectorAll('.editSavedSearchBtn');
+            const editSavedSearchModal = document.getElementById('editSavedSearchModal');
+
+            // Add event listener for each button
+            editButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove the hidden class from the editSavedSearchModal
+                    
+                    editSavedSearchModal.classList.remove('hidden');
+
+                    // Get the savedSearchURL sibling element
+                    const savedSearchURL = button.previousElementSibling;
+
+                    // Set values for savedSearchLink and savedSearchName
+                    const savedSearchLink = document.getElementById('savedSearchLink');
+                    const savedSearchName = document.getElementById('savedSearchName');
+                    const savedSearchId = document.getElementById('savedSearchId');
+
+                    savedSearchLink.value = savedSearchURL.getAttribute('href'); // Get href
+                    savedSearchName.value = savedSearchURL.innerHTML; // Get innerHTML
+                    savedSearchId.value = button.getAttribute('data-for')
+                });
+            });
+
+            const cancelSavedSearchButton = document.getElementById('cancelButtonSavedSearch');
+            const deleteSavedSearchButton = document.getElementById('deleteSavedSearchButton');
+            const editSavedSearchForm = document.getElementById('editSavedSearchForm');
+
+            cancelSavedSearchButton.addEventListener('click', function() {
+                editSavedSearchModal.classList.add('hidden');
+            });
+
+            
+
+            deleteSavedSearchButton.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you really want to delete this saved search?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel',
+                    preConfirm: () => {
+                        // If confirmed, perform the AJAX request
+                        return fetch("{% url 'Ranker:ajax_delete_saved_search' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 'unit_id': document.getElementById('savedSearchId').value })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                                // Show success notification
+                                
+                            } else {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Unit Not Saved',
+                                    text: data.message || 'This unit was not found in your saved list.',
+                                    didOpen: () => {
+                                        notificationRegion.setAttribute('aria-live', 'assertive');
+                                        notificationRegion.innerText = data.message || 'This unit was not found in your saved list.';
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to Remove',
+                                text: 'There was an error removing the saved search.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'assertive');
+                                    notificationRegion.innerText = 'There was an error removing the saved search.';
+                                }
+                            });
+                        });
+                    }
+                });
+            })
+
+            editSavedSearchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const savedSearchId = document.getElementById('savedSearchId').value;
+                const formData = new FormData(editSavedSearchForm);
+
+                fetch(`{% url "Ranker:ajax_update_saved_search" %}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the table or the UI accordingly
+                        location.reload(); // Reload the page to see the changes
+                    } else {
+                        // Handle errors
+                        alert('An error occurred while saving your changes. Please try again.');
+                    }
+                });
+            });
+            //{% endif %}
+
+
         });
         
         
     </script>
     
+    
     <div class="px-2 pt-4 pb-24">
-        {% if request.user.is_authenticated %}
-        <div class="max-w-md flex items-center space-x-2 mb-3">
+        {% if showLoggedInRequiredItems %}
+        <div class="max-w-md flex items-center space-x-2 mb-3" id="unitActionContainer">
             <label for="rowAction" class="block text-sm font-medium text-gray-900 dark:text-white">
                 Unit action
             </label>
-            <select id="rowAction" aria-label="Select an action for the unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-1.5">
+            <select id="rowAction" name="rowAction" aria-label="Select an action for the unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-xs rounded-md focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 p-1.5">
                 <option value="">----------</option>
-                {% if request.user.verified_account == True %}
                 <option value="Save">Save/Unsave Unit</option>
                 <option value="Sucks">Report that Apartment Sucks</option>
                 <option value="NA">Report Apartment as Not Available</option>
-                {% endif %}
                 {% if request.user.is_staff == True %}
                 <option value="Edit">Edit</option>
                 <option value="Delete">Delete</option>
@@ -274,203 +637,25 @@
             </button>
         </div>
         
-        {% else %}
-        <div class="mb-4">
+    {% else %}
+        <!-- <div class="mb-4">
             <p>
                 <a href="{% url 'Ranker:sign_up' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="Sign up for an account">Sign up</a> or <a href="{% url 'Ranker:login_page' %}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="Log in to your account">log in</a> to save and report listings.
             </p>
-        </div>
+        </div> -->
         
-        {% endif %}
-        <table id="filter-table">
-            <thead>
-                <tr>
-                    {% if request.user.is_authenticated %}
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Select
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Account Action
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    {% endif %}
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Added to ATDS
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Unit Type
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Neighborhood
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    {% comment %}<th scope="col">
-                        <span class="flex items-center">
-                            Category
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>{% endcomment %}
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Price/Mo
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    {% comment %}<th scope="col">
-                        <span class="flex items-center">
-                            Quality
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Value
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>{% endcomment %}
-                    <th scope="col">
-                        <span class="flex items-center">
-                            Link
-                            <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
-                            </svg>
-                        </span>
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for unit in units %}
-                <tr data-unit-row="{{unit.id}}">
-                    {% if request.user.is_authenticated %}
-                    <td class="font-bold">
-                        <input 
-                            type="radio" 
-                            data-unit-id="{{unit.id}}" 
-                            id="select-radio-{{forloop.counter}}" 
-                            value="" 
-                            name="select-radio" 
-                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                            data-is-saved="{% if unit.is_saved %}true{% else %}false{% endif %}"
-                            data-is-reported-na="{% if unit.is_not_available_reported %}true{% else %}false{% endif %}"
-                            data-is-reported-sucks="{% if unit.is_sucks_reported %}true{% else %}false{% endif %}"
-                            aria-label="Select unit {{unit.id}}"
-                        >
-                    </td>
-                    <td class="badgeTD">
-                        {% if unit.is_saved %}
-                            <div>
-                                <span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300" aria-label="Saved badge">Saved</span>
-                            </div>
-                        {% endif %}
-                        {% if unit.is_sucks_reported %}
-                            <div>
-                                <span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300" aria-label="Reported (Sucks) badge">Reported (Sucks)</span>
-                            </div>
-                        {% endif %}
-                        {% if unit.is_not_available_reported %}
-                            <div>
-                                <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300" aria-label="Reported (Not Available) badge">Reported (Not Avail.)</span>
-                            </div>
-                        {% endif %}
-                    </td>
-                    {% endif %}
-                    <td>{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
-                    <td class="font-bold">{{unit.unitType}}</td>
-                    <td class="font-bold">{{unit.neighborhood}}</td>
-                    {% comment %}<td class="font-bold">{{unit.category}}</td>{% endcomment %}
-                    <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
-                    {% comment %}<td class="
-                        {% if unit.quality_rating == 1 %}
-                            bg-red-300 text-red-700
-                        {% elif unit.quality_rating == 2 %}
-                            bg-red-200 text-red-700
-                        {% elif unit.quality_rating == 3 %}
-                            bg-red-100 text-red-700
-                        {% elif unit.quality_rating == 4 %}
-                            bg-red-50 text-red-700
-                        {% elif unit.quality_rating == 5 %}
-                            bg-coolGray-50 text-black
-                        {% elif unit.quality_rating == 6 %}
-                            bg-green-50 text-green-700
-                        {% elif unit.quality_rating == 7 %}
-                            bg-green-100 text-green-700
-                        {% elif unit.quality_rating == 8 %}
-                            bg-green-200 text-green-700
-                        {% elif unit.quality_rating == 9 %}
-                            bg-green-300 text-green-700
-                        {% elif unit.quality_rating == 10 %}
-                            bg-green-400 text-white
-                        {% else %}
-                            bg-white text-black
-                        {% endif %}
-                        font-bold
-                    ">
-                        {{ unit.quality_rating }}/10
-                    </td>
-                    <td class="
-                        {% if unit.value_rating == 1 %}
-                            bg-red-300 text-red-700
-                        {% elif unit.value_rating == 2 %}
-                            bg-red-200 text-red-700
-                        {% elif unit.value_rating == 3 %}
-                            bg-red-100 text-red-700
-                        {% elif unit.value_rating == 4 %}
-                            bg-red-50 text-red-700
-                        {% elif unit.value_rating == 5 %}
-                            bg-coolGray-50 text-black
-                        {% elif unit.value_rating == 6 %}
-                            bg-green-50 text-green-700
-                        {% elif unit.value_rating == 7 %}
-                            bg-green-100 text-green-700
-                        {% elif unit.value_rating == 8 %}
-                            bg-green-200 text-green-700
-                        {% elif unit.value_rating == 9 %}
-                            bg-green-300 text-green-700
-                        {% elif unit.value_rating == 10 %}
-                            bg-green-400 text-white
-                        {% else %}
-                            bg-white text-black
-                        {% endif %}
-                        font-bold
-                    ">
-                        {{ unit.value_rating }}/10
-                    </td> {% endcomment %}
-                    <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    {% endif %}
+        <div role="status" id="spinner" class="container mx-auto mt-4">
+            <div class="flex justify-center align-center">
+                <svg aria-hidden="true" class="w-16 h-16 text-gray-200 animate-spin dark:text-gray-600 fill-purple-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
+                    <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
+                </svg>
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+        <section id="resultContent" class="hidden"></section>
+        
     </div>
 </section>
 {% if request.user.is_staff %}
@@ -554,6 +739,37 @@
 </div>
 {% endif %}
 
+{% if showLoggedInRequiredItems and savedSearches %}
+<div id="editSavedSearchModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6" role="document">
+        <h2 id="editSavedSearchModalLabel" class="text-xl font-semibold mb-4">Edit Saved Search</h2>
+        <form id="editSavedSearchForm" aria-labelledby="editSavedSearchModalLabel" action="/">
+            <input type="hidden" id="savedSearchId" name="savedSearchId">
+
+            <!-- Listing Link -->
+            <div class="mb-4 mt-6">
+                <label for="savedSearchLink" class="block text-sm font-medium text-gray-700">Saved Search URL</label>
+                <input type="url" id="savedSearchLink" name="search" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label for="savedSearchName" class="block text-sm font-medium text-gray-700">Saved Search Name</label>
+                <input type="text" id="savedSearchName" name="search_name" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md" maxlength="40">
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-between mt-8 flex-wrap">
+                <button type="button" id="cancelButtonSavedSearch" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+                <div>
+                    <button type="button" id="deleteSavedSearchButton"  class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
+                    <button type="submit" id="saveChangesSavedSearchBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Save Changes</button>
+                  </div>                  
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
 <script src="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3"></script>
 <script>
 let selectedRadioId = null;
@@ -567,80 +783,10 @@ function storeSelectedRadio() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const spinner = document.getElementById("spinner");
-    if (document.getElementById("filter-table") && typeof simpleDatatables.DataTable !== 'undefined') {
-        const dataTable = new simpleDatatables.DataTable("#filter-table", {
-            tableRender: (_data, table, type) => {
-                if (type === "print") {
-                    return table;
-                }
 
-                const tHead = table.childNodes[0];
-                const filterHeaders = {
-                    nodeName: "TR",
-                    attributes: {
-                        class: "search-filtering-row"
-                    },
-                    childNodes: tHead.childNodes[0].childNodes.map((_th, index) => ({
-                        nodeName: "TH",
-                        attributes: {
-                            class: "px-2 py-1 text-xs", // Add classes for smaller padding and text size
-                        },
-                        childNodes: [
-                            {
-                                nodeName: "INPUT",
-                                attributes: {
-                                    class: "datatable-input w-full text-xs px-1 py-0.5", // Smaller input size
-                                    type: "search",
-                                    "data-columns": "[" + index + "]",
-                                    name: "filter-" + index
-                                }
-                            }
-                        ]
-                    }))
-                };
-                tHead.childNodes.push(filterHeaders);
-                return table;
-            }
-        });
-        // Hide the spinner once the DataTable is initialized
-        dataTable.on("datatable.init", () => {
-            spinner.classList.add('hidden');
-            spinner.setAttribute('aria-hidden', 'true');
-            const contentContainer = document.getElementById("pageContentContainer");
-            contentContainer.classList.remove('hidden');
-            contentContainer.setAttribute('aria-live', 'polite');
-            // Select all radio buttons with a specific class or name
-            const radioButtons = document.querySelectorAll('input[type="radio"]');
-            radioButtons.forEach((radio) => {
-            radio.addEventListener('change', (event) => {
-                if (radio.checked) {
-                    selectedRadioId = radio.id
-                }
-            });
-            });
-        });
-        dataTable.on('datatable.pager', storeSelectedRadio);
-        dataTable.on('datatable.sort', storeSelectedRadio);
-        dataTable.on('datatable.search', storeSelectedRadio);
-        dataTable.on('datatable.update', () => {
-            const checkedRadio = document.querySelector('input[type="radio"]:checked');
-            if (checkedRadio) {
-                checkedRadio.checked = false;
-            }
-            if (selectedRadioId) {
-                const radioToSelect = document.getElementById(selectedRadioId);
-                if (radioToSelect) {
-                    radioToSelect.checked = true;
-                }
-            }
-        });
-    }
-})
 </script>
 
-{% if request.user.is_authenticated and request.user.verified_account == True %}
+{% if showLoggedInRequiredItems %}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     var unitId = null
@@ -1093,15 +1239,5 @@ document.addEventListener('DOMContentLoaded', function() {
 // {% endif %}
 </script>
 {% endif %}
-
-{% else %}
-<section class="flex flex-col items-center justify-center pt-4 md:pt-20">
-    <figure>
-        <img src="{% static 'undraw_building.svg' %}" class="w-96" alt="No units found."/>
-    </figure>
-  <h1 class="text-xl text-gray-600 dark:text-gray-300 mb-4 mt-10 px-4">Looks like we don't have any apartments for you today. Check back tomorrow!</h1>
-</section>
-{% endif %}
-
 
 {% endblock %}

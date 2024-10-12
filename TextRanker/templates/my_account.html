@@ -10,7 +10,7 @@
 <!-- aria-live region for screen readers -->
 <div id="notification-region" aria-live="assertive" class="sr-only"></div>
 
-<div class="container mx-auto px-4 py-6">
+<div class="max-w-screen-xl container mx-auto px-4 py-6">
     <h1 class="mb-4 text-4xl font-extrabold leading-none tracking-tight text-gray-900 md:text-5xl lg:text-6xl dark:text-white">My Account</h1>
     <section>
         <p class="text-md font-medium">You are logged in as {{user.email}}.</p>
@@ -34,17 +34,18 @@
         <a href="{% url 'Ranker:email_verification_required' %}" class="text-blue-500 hover:text-blue-700 font-semibold">Verify Email</a>
     </section>
     {% else %}
-        <section>
+    
+    <section class="py-4">
         {% if savedUnits %}
             <h2 class="text-xl font-semibold mb-4">Your Saved Units</h2>
-            <div class="flex flex-wrap">
+            <div class="flex flex-wrap gap-4">
                 {% for savedUnit in savedUnits %}
-                <div class="bg-white border border-purple-700 rounded-lg dark:bg-gray-800 dark:border-gray-700 p-6 m-2 max-w-sm">
+                <div class="bg-white border border-purple-700 rounded-lg dark:bg-gray-800 dark:border-gray-700 p-6 max-w-sm">
                     <div style="min-height:13rem">
                         <h3 class="text-3xl text-gray-900 dark:text-white mb-2">
                             <span class="font-bold">{{savedUnit.unit.unitType}}</span> in <span class="font-bold">{{savedUnit.unit.neighborhood}}</span>
                         </h3>
-                        <p class="text-gray-600 dark:text-gray-400">
+                        {% comment %}<p class="text-gray-600 dark:text-gray-400">
                             Quality:
                             <span class="inline-block px-3 py-1 text-xs font-medium rounded-full 
                                 {% if savedUnit.unit.quality_rating == 1 %}
@@ -105,7 +106,7 @@
                             ">
                                 {{savedUnit.unit.value_rating}}/10
                             </span>
-                        </p>
+                        </p>{% endcomment %}
                         <div>
                             <a href="{{savedUnit.unit.listing_link}}" id="listing-link-{{savedUnit.unit.id}}" class="text-blue-600 dark:text-blue-500 hover:underline text-sm">{{savedUnit.unit.listing_link}}</a>
                             <button data-copy-to-clipboard-target="listing-link-{{savedUnit.unit.id}}" class="text-gray-900 dark:text-gray-400 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 rounded-lg py-2 px-2.5 inline-flex items-center justify-center bg-white border-gray-200 border">
@@ -178,8 +179,31 @@
             <p class="font-normal text-gray-700 dark:text-gray-400"><a href="{% url 'Ranker:home' %}" class="text-blue-500 hover:text-blue-700 font-semibold">Search here for apartments that don't suck.</a></p>
         </div>
         {% endif %}
+        </section><hr class="h-px my-4 bg-gray-200 border-0 dark:bg-gray-700">
+        <section class="py-4">
+            {% if savedSearches %}
+                <h2 class="text-xl font-semibold mb-4">Your Saved Searches</h2>
+                <ul class="flex flex-wrap space-x-4">
+                    {% for savedSearch in savedSearches %}
+                        <li class="flex items-center">
+                            <a href="{{ savedSearch.search }}" class="savedSearchURL me-1 text-blue-600 hover:underline">{{ savedSearch.search_name }}</a>
+                            <button class="editSavedSearchBtn" data-for="{{savedSearch.id}}" aria-label="Edit saved search {{ savedSearch.search_name }}">
+                                <svg aria-hidden="true" class="w-6 h-6 text-gray-600 hover:text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m14.304 4.844 2.852 2.852M7 7H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-4.5m2.409-9.91a2.017 2.017 0 0 1 0 2.853l-6.844 6.844L8 14l.713-3.565 6.844-6.844a2.015 2.015 0 0 1 2.852 0Z"/>
+                                </svg>
+                            </button>
+                        </li>
+                    {% endfor %}
+                </ul>
+               
+            {% else %}
+            <div class="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+                <h2 class="text-xl tracking-tight text-gray-900 dark:text-white">
+                    Your saved searches will appear here.</h2><p class="pt-2 font-normal text-gray-700 dark:text-gray-400"><a href="{% url 'Ranker:home' %}" class="text-blue-500 hover:text-blue-700 font-semibold">Save searches over here.</a></p>
+            </div>
+            {% endif %}
         </section>
-
+        
     {% endif %}
     <section class="mt-8 py-4">
         <div class="text-red-500 text-sm mb-2">
@@ -192,7 +216,38 @@
             <a href="{% url 'Ranker:delete_account' %}" class="hover:underline">Delete account</a>
         </div>
     </section>
+
 </div>
+{% if savedSearches %}
+<div id="editSavedSearchModal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6" role="document">
+        <h2 id="editSavedSearchModalLabel" class="text-xl font-semibold mb-4">Edit Saved Search</h2>
+        <form id="editSavedSearchForm" aria-labelledby="editSavedSearchModalLabel" action="/">
+            <input type="hidden" id="savedSearchId" name="savedSearchId">
+
+            <!-- Listing Link -->
+            <div class="mb-4 mt-6">
+                <label for="savedSearchLink" class="block text-sm font-medium text-gray-700">Saved Search URL</label>
+                <input type="url" id="savedSearchLink" name="search" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md">
+            </div>
+
+            <div class="mb-4">
+                <label for="savedSearchName" class="block text-sm font-medium text-gray-700">Saved Search Name</label>
+                <input type="text" id="savedSearchName" name="search_name" class="mt-1 bg-gray-50 block w-full p-2 border border-gray-300 rounded-md" maxlength="40">
+            </div>
+
+            <!-- Save Button -->
+            <div class="flex justify-between mt-8 flex-wrap">
+                <button type="button" id="cancelButtonSavedSearch" class="bg-gray-500 text-white px-4 py-2 rounded-md">Cancel</button>
+                <div>
+                    <button type="button" id="deleteSavedSearchButton"  class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md">Delete</button>
+                    <button type="submit" id="saveChangesSavedSearchBtn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md">Save Changes</button>
+                  </div>                  
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
 <script>
 const notificationRegion = document.getElementById('notification-region');
 
@@ -525,6 +580,182 @@ function performRemoveAction(unitId) {
         }
     });
 }
+
+//{% if savedSearches %}
+            // Select all buttons with the class editSavedSearchBtn
+            const editButtons = document.querySelectorAll('.editSavedSearchBtn');
+            const editSavedSearchModal = document.getElementById('editSavedSearchModal');
+
+            // Add event listener for each button
+            editButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove the hidden class from the editSavedSearchModal
+                    
+                    editSavedSearchModal.classList.remove('hidden');
+
+                    // Get the savedSearchURL sibling element
+                    const savedSearchURL = button.previousElementSibling;
+
+                    // Set values for savedSearchLink and savedSearchName
+                    const savedSearchLink = document.getElementById('savedSearchLink');
+                    const savedSearchName = document.getElementById('savedSearchName');
+                    const savedSearchId = document.getElementById('savedSearchId');
+
+                    savedSearchLink.value = savedSearchURL.getAttribute('href'); // Get href
+                    savedSearchName.value = savedSearchURL.innerHTML; // Get innerHTML
+                    savedSearchId.value = button.getAttribute('data-for')
+                });
+            });
+
+            const cancelSavedSearchButton = document.getElementById('cancelButtonSavedSearch');
+            const deleteSavedSearchButton = document.getElementById('deleteSavedSearchButton');
+            const editSavedSearchForm = document.getElementById('editSavedSearchForm');
+
+            cancelSavedSearchButton.addEventListener('click', function() {
+                editSavedSearchModal.classList.add('hidden');
+            });
+
+            function launchSaveSearchModal() {
+                Swal.fire({
+                    title: 'Save Search',
+                    text: 'The active search will be saved to your account.',
+                    input: 'text',
+                    inputLabel: "Please provide a name for this search.",
+                    inputPlaceholder: 'Ex: Logan Square 2-Beds',
+                    inputAttributes: {
+                        'aria-label': 'Provide a name for this search.'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Save Search',
+                    preConfirm: (search_name) => {
+                        if (!search_name) {
+                            Swal.showValidationMessage('Please enter a search name.');
+                        }
+                        return search_name;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch("{% url 'Ranker:ajax_save_search' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 'search_name': result.value, 'search': window.location.href })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload()
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error',
+                                    text: data.message || 'An error occurred.',
+                                    didOpen: () => {
+                                        notificationRegion.setAttribute('aria-live', 'assertive');
+                                        notificationRegion.innerText = data.message || 'An error occurred.';
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: 'There was an error submitting your request.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'assertive');
+                                    notificationRegion.innerText = 'There was an error submitting your request.';
+                                }
+                            });
+                        });
+                    }
+                });
+            }
+
+            deleteSavedSearchButton.addEventListener('click', function() {
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: 'Do you really want to delete this saved search?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Yes, remove it!',
+                    cancelButtonText: 'Cancel',
+                    preConfirm: () => {
+                        // If confirmed, perform the AJAX request
+                        return fetch("{% url 'Ranker:ajax_delete_saved_search' %}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ 'unit_id': document.getElementById('savedSearchId').value })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                location.reload();
+                                // Show success notification
+                                
+                            } else {
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Unit Not Saved',
+                                    text: data.message || 'This unit was not found in your saved list.',
+                                    didOpen: () => {
+                                        notificationRegion.setAttribute('aria-live', 'assertive');
+                                        notificationRegion.innerText = data.message || 'This unit was not found in your saved list.';
+                                    }
+                                });
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Failed to Remove',
+                                text: 'There was an error removing the saved search.',
+                                didOpen: () => {
+                                    notificationRegion.setAttribute('aria-live', 'assertive');
+                                    notificationRegion.innerText = 'There was an error removing the saved search.';
+                                }
+                            });
+                        });
+                    }
+                });
+            })
+
+            editSavedSearchForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const savedSearchId = document.getElementById('savedSearchId').value;
+                const formData = new FormData(editSavedSearchForm);
+
+                fetch(`{% url "Ranker:ajax_update_saved_search" %}`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Update the table or the UI accordingly
+                        location.reload(); // Reload the page to see the changes
+                    } else {
+                        // Handle errors
+                        alert('An error occurred while saving your changes. Please try again.');
+                    }
+                });
+            });
+            //{% endif %}
 
 </script>
 {% endblock %}

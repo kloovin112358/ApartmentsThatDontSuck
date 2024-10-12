@@ -214,6 +214,14 @@ class UnitNotAvailableReport(models.Model):
     def __str__(self):
         return f"Report by {self.user} on {self.unit}"
 
+class SavedSearch(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, blank=True, null=True)
+    search = models.URLField()
+    search_name = models.CharField(max_length=40)
+
+    def __str__(self):
+        return str(self.user) + " " + self.search_name
+
 class Search(models.Model):
     listing_site = models.ForeignKey(ListingSite, on_delete=models.CASCADE)
     search_url = models.CharField(max_length=1000)

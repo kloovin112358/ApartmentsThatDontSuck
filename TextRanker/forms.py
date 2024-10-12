@@ -37,6 +37,11 @@ class UnitUpdateForm(forms.ModelForm):
         model = Unit
         fields = ['status', "category", 'neighborhood', 'unitType', 'listing_link', 'price', 'quality_rating', 'note']
 
+class SaveSearchUpdateForm(forms.ModelForm):
+    class Meta:
+        model = SavedSearch
+        fields = ['search', "search_name"]
+
 class MultipleFileInput(forms.ClearableFileInput):
     allow_multiple_selected = True
 

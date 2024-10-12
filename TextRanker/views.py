@@ -34,6 +34,8 @@ from django.utils import timezone
 from django.utils.formats import date_format
 from django.db.models import Count, Q
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponse
+
 
 # def testAnything(request):
 #     # send_mail(
@@ -64,24 +66,30 @@ def aboutPage(request):
     return render(request, "about.html")
 
 def ApartmentsList(request):
-    if request.user.is_authenticated:
-        saved_units = SavedUnit.objects.filter(user=request.user, unit=OuterRef('pk'))
-        sucks_reports = UnitSucksReport.objects.filter(user=request.user, unit=OuterRef('pk'))
-        not_available_reports = UnitNotAvailableReport.objects.filter(user=request.user, unit=OuterRef('pk'))
+    # if request.user.is_authenticated:
+    #     saved_units = SavedUnit.objects.filter(user=request.user, unit=OuterRef('pk'))
+    #     sucks_reports = UnitSucksReport.objects.filter(user=request.user, unit=OuterRef('pk'))
+    #     not_available_reports = UnitNotAvailableReport.objects.filter(user=request.user, unit=OuterRef('pk'))
 
-        units = Unit.objects.filter(
-            status="Live"
-        ).annotate(
-            is_saved=Exists(saved_units),
-            is_sucks_reported=Exists(sucks_reports),
-            is_not_available_reported=Exists(not_available_reports)
-        ).order_by('-is_saved', '-datetime_added', '-is_sucks_reported', '-is_not_available_reported')
-    else:
-        units = Unit.objects.filter(status="Live").order_by('-datetime_added')
+    #     units = Unit.objects.filter(
+    #         status="Live"
+    #     ).annotate(
+    #         is_saved=Exists(saved_units),
+    #         is_sucks_reported=Exists(sucks_reports),
+    #         is_not_available_reported=Exists(not_available_reports)
+    #     ).order_by('-is_saved', '-datetime_added', '-is_sucks_reported', '-is_not_available_reported')
+    # else:
+    #     units = Unit.objects.filter(status="Live").order_by('-datetime_added')
     status_choices = [{'value': c[0], 'label': c[1]} for c in Unit.status.field.choices]
-
+    showLoggedInRequiredItems = False
+    savedSearches = None
+    if request.user and is_user_verified(request.user):
+        showLoggedInRequiredItems = True
+        savedSearches = SavedSearch.objects.filter(user=request.user)
     return render(request, "apartments_list.html", {
-        "units": units,
+        # "units": units,
+        "savedSearches": savedSearches,
+        "showLoggedInRequiredItems": showLoggedInRequiredItems,
         "unit_statuses": status_choices,
         "categories": Unit.CATEGORY_CHOICES,
         'neighborhoods': Neighborhood.objects.all(),
@@ -214,7 +222,6 @@ class MyAccountView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
 
         # Subquery to check if a UnitSucksReport exists for each unit
         sucks_report_exists = UnitSucksReport.objects.filter(
@@ -234,7 +241,10 @@ class MyAccountView(LoginRequiredMixin, TemplateView):
             has_not_available_report=Exists(not_available_report_exists)
         )
 
+        saved_searches = SavedSearch.objects.filter(user=self.request.user)
+
         context['savedUnits'] = saved_units
+        context['savedSearches'] = saved_searches
 
         return context
 
@@ -305,48 +315,84 @@ def ajax_get_units(request):
     min_price = request.GET.get('min_price')
     max_price = request.GET.get('max_price')
     locations = request.GET.get('locations')
-    location_type = request.GET.get('location_type')
+    location_type = request.GET.get('location_filter_type')
 
     # Parse the JSON strings back to Python objects (lists)
     if unit_types:
         try:
             unit_types = json.loads(unit_types)
         except json.JSONDecodeError:
+            messages.error(request, "invalid unit type parameter.")
             return JsonResponse({'success': False, 'error': 'Invalid unit_types parameter'}, status=400)
-
-    if locations:
-        try:
-            locations = json.loads(locations)
-        except json.JSONDecodeError:
-            return JsonResponse({'success': False, 'error': 'Invalid locations parameter'}, status=400)
-
+        
+    if location_type:
+        if location_type not in ['neighborhood', 'region']:
+            messages.error(request, "invalid location type parameter.")
+            return JsonResponse({'success': False, 'error': 'Invalid location type parameter'}, status=400)
+        if locations:
+            try:
+                locations = json.loads(locations)
+            except json.JSONDecodeError:
+                messages.error(request, "invalid locations.")
+                return JsonResponse({'success': False, 'error': 'Invalid locations parameter'}, status=400)
+        else:
+            messages.error(request, "locations must be present when filtering with location type parameter.")
+            return JsonResponse({'success': False, 'error': 'Locations must be present when filtering with location type parameter.'}, status=400)
+        
     # Handle the case where min_price or max_price is missing
     if min_price is not None:
         try:
             min_price = float(min_price)
         except ValueError:
+            messages.error(request, "invalid min price parameter.")
             return JsonResponse({'success': False, 'error': 'Invalid min_price parameter'}, status=400)
 
     if max_price is not None:
         try:
             max_price = float(max_price)
         except ValueError:
+            messages.error(request, "invalid max price parameter.")
             return JsonResponse({'success': False, 'error': 'Invalid max_price parameter'}, status=400)
+        
+    filters = Q(status="Live")
 
-    # Now you have all your parameters parsed, you can use them to query your database
-    # Example (dummy response):
-    units = []  # Replace this with the actual logic to get units
+    if unit_types:
+        unit_type_ids = UnitType.objects.filter(unitType__in=unit_types).values_list('id', flat=True)
+        filters &= Q(unitType__in=unit_type_ids)
 
-    # Respond with the data
-    return JsonResponse({
-        'success': True,
-        'units': units,
-        'unit_types': unit_types,
-        'min_price': min_price,
-        'max_price': max_price,
-        'locations': locations,
-        'location_type': location_type,
-    })
+    if min_price is not None:
+        filters &= Q(price__gte=min_price)
+
+    if max_price is not None:
+        filters &= Q(price__lte=max_price)
+
+    if location_type:
+        print(location_type)
+        if location_type == "region":
+            neighborhood_ids = Neighborhood.objects.filter(city_region__name__in=locations).values_list('id', flat=True)
+            filters &= Q(neighborhood__in=neighborhood_ids)
+        else:
+            filters &= Q(neighborhood__in=locations)
+
+    if request.user.is_authenticated:
+        saved_units = SavedUnit.objects.filter(user=request.user, unit=OuterRef('pk'))
+        sucks_reports = UnitSucksReport.objects.filter(user=request.user, unit=OuterRef('pk'))
+        not_available_reports = UnitNotAvailableReport.objects.filter(user=request.user, unit=OuterRef('pk'))
+
+        units = Unit.objects.filter(filters).annotate(
+            is_saved=Exists(saved_units),
+            is_sucks_reported=Exists(sucks_reports),
+            is_not_available_reported=Exists(not_available_reports)
+        ).order_by('-is_saved', '-datetime_added', '-is_sucks_reported', '-is_not_available_reported')
+    else:
+        units = Unit.objects.filter(filters).order_by('-datetime_added')
+
+    showLoggedInRequiredItems = False
+    if request.user and is_user_verified(request.user):
+        showLoggedInRequiredItems = True
+
+    html = render_to_string('apartments_list_result.html', {'units': units, "request":request, "showLoggedInRequiredItems": showLoggedInRequiredItems})
+    return JsonResponse({'html': html})
 
 @user_passes_test(is_user_staff)
 @login_required
@@ -460,6 +506,74 @@ def ajax_sucks_unit(request):
             return JsonResponse({'success': False, 'message': 'Invalid JSON.'})
     else:
         return JsonResponse({'success': False, 'message': 'User not authenticated.'})
+
+@user_passes_test(is_user_verified)
+@login_required
+@require_POST
+def ajax_save_search(request):
+    if request.user.is_authenticated:
+        try:
+            data = json.loads(request.body)
+            search_url = data.get('search')
+            search_name = data.get('search_name')
+
+            # Validate search URL against ALLOWED_HOSTS
+            if search_url and search_name:
+                if any(host in search_url for host in settings.ALLOWED_HOSTS):
+                    SavedSearch.objects.create(user=request.user, search=search_url, search_name=search_name)
+                    messages.success(request, "search saved.")
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'message': 'Invalid search URL.'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid data.'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON.'})
+    return JsonResponse({'success': False, 'message': 'User not authenticated.'})
+
+
+@user_passes_test(is_user_verified)
+@login_required
+@require_POST
+def ajax_delete_saved_search(request):
+    if request.user.is_authenticated:
+        try:
+            data = json.loads(request.body)
+            saved_search_id = data.get('unit_id')
+
+            if saved_search_id:
+                saved_search = SavedSearch.objects.filter(pk=saved_search_id, user=request.user).first()
+                if saved_search:
+                    saved_search.delete()
+                    messages.success(request, "saved search deleted.")
+                    return JsonResponse({'success': True})
+                else:
+                    return JsonResponse({'success': False, 'message': 'Saved search not found.'})
+            else:
+                return JsonResponse({'success': False, 'message': 'Invalid data.'})
+        except json.JSONDecodeError:
+            return JsonResponse({'success': False, 'message': 'Invalid JSON.'})
+    return JsonResponse({'success': False, 'message': 'User not authenticated.'})
+
+
+@user_passes_test(is_user_verified)
+@login_required
+@require_POST
+def ajax_update_saved_search(request):
+    if request.method == 'POST':
+        savedsearch_id = request.POST.get('savedSearchId')
+        savedSearchInst = get_object_or_404(SavedSearch, id=savedsearch_id)
+        # Update the Unit instance with the form data
+        form = SaveSearchUpdateForm(request.POST, instance=savedSearchInst)
+        if form.is_valid():
+            # Save the form but don't commit to the database yet
+            form.save()
+            messages.success(request, "saved search updated.")
+            return JsonResponse({'success': True})
+        else:
+            return JsonResponse({'success': False, 'errors': form.errors})
+
+    return JsonResponse({'success': False, 'error': 'Invalid request method.'})
 
 @user_passes_test(is_user_verified)
 @login_required

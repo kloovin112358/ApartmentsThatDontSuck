@@ -47,6 +47,9 @@ urlpatterns = [
     path('ajax/contact_form/', ajax_contact_form, name='ajax_contact_form'),
     path('ajax/save_note/', ajax_save_note, name="ajax_save_note"),
     path('ajax/get_units/', ajax_get_units, name="ajax_get_units"),
+    path('ajax/save_search/', ajax_save_search, name="ajax_save_search"),
+    path('ajax/delete_save_search/', ajax_delete_saved_search, name="ajax_delete_saved_search"),
+    path('ajax/update_save_search/', ajax_update_saved_search, name="ajax_update_saved_search"),
 
     #staff URLs
     path('ajax/add_unit/', ajax_add_unit, name='ajax_add_unit'),

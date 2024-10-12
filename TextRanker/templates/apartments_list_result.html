@@ -1,0 +1,117 @@
+{% load humanize %}
+{% if units %}
+
+
+<table id="filter-table">
+    <thead>
+        <tr>
+            {% if showLoggedInRequiredItems %}
+            <th scope="col">
+                <span class="flex items-center">
+                    Select
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th scope="col">
+                <span class="flex items-center">
+                    Account Action
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            {% endif %}
+            <th scope="col">
+                <span class="flex items-center">
+                    Added to ATDS
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th scope="col">
+                <span class="flex items-center">
+                    Unit Type
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th scope="col">
+                <span class="flex items-center">
+                    Neighborhood
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th scope="col">
+                <span class="flex items-center">
+                    Price
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+            <th scope="col">
+                <span class="flex items-center">
+                    Link
+                    <svg class="w-4 h-4 ms-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m8 15 4 4 4-4m0-6-4-4-4 4"/>
+                    </svg>
+                </span>
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for unit in units %}
+        <tr data-unit-row="{{unit.id}}">
+            {% if showLoggedInRequiredItems %}
+            <td class="font-bold">
+                <input 
+                    type="radio" 
+                    data-unit-id="{{unit.id}}" 
+                    id="select-radio-{{forloop.counter}}" 
+                    value="" 
+                    name="select-radio" 
+                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    data-is-saved="{% if unit.is_saved %}true{% else %}false{% endif %}"
+                    data-is-reported-na="{% if unit.is_not_available_reported %}true{% else %}false{% endif %}"
+                    data-is-reported-sucks="{% if unit.is_sucks_reported %}true{% else %}false{% endif %}"
+                    aria-label="Select unit {{unit.id}}"
+                >
+            </td>
+            <td class="badgeTD">
+                {% if unit.is_saved %}
+                    <div>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-green-900 dark:text-green-300" aria-label="Saved badge">Saved</span>
+                    </div>
+                {% endif %}
+                {% if unit.is_sucks_reported %}
+                    <div>
+                        <span class="bg-red-100 text-red-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-red-900 dark:text-red-300" aria-label="Reported (Sucks) badge">Reported (Sucks)</span>
+                    </div>
+                {% endif %}
+                {% if unit.is_not_available_reported %}
+                    <div>
+                        <span class="bg-gray-100 text-gray-800 text-xs font-medium me-2 mb-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300" aria-label="Reported (Not Available) badge">Reported (Not Avail.)</span>
+                    </div>
+                {% endif %}
+            </td>
+            {% endif %}
+            <td>{{unit.datetime_added|date:"n/j/y, H:i"}}</td>
+            <td class="font-bold">{{unit.unitType}}</td>
+            <td class="font-bold">{{unit.neighborhood}}</td>
+            <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
+            <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<section class="flex flex-col items-center justify-center pt-4 md:pt-20" id="404Result">
+  <h1 class="text-xl text-gray-600 dark:text-gray-300 mb-4 mt-10 px-4">No results found, sorry.</h1>
+</section>
+{% endif %}
