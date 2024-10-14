@@ -28,11 +28,17 @@
     background-color: rgb(28, 28, 242);
     border: 1px solid rgb(67, 28, 242);
 }
+
+@media (max-width: 768px) {
+    #filtersDiv {
+        max-width: 20rem; /* 320px */
+    }
+}
 </style>
 <section class="max-w-screen-3xl mx-auto" id="pageContentContainer">
-    <div id="filtersContainer" class="bg-white shadow-lg">
-        <div class="w-full flex justify-center flex-wrap">
-            <form class="p-2 md:flex md:items-center md:space-x-10 flex-wrap justify-center">
+    <div id="filtersContainer flex items-center justify-center" class="bg-white shadow-lg">
+        <div class="hidden md:flex items-center justify-center mx-auto" id="filtersDiv">
+            <form class="p-2 md:flex md:items-center md:space-x-10 flex-wrap justify-center" id="filterForm">
                 <!-- Unit Type Section -->
                 <div class="py-4">
                     <h3 class="text-lg font-semibold mb-2">Unit Type</h3>
@@ -128,7 +134,7 @@
                 </div>
     
                 <!-- Submit and Save Search Buttons -->
-                <div class="py-4">
+                <div class="pt-4 md:pb-4" id="buttonsActionDiv">
                     <button id="filterBtn" type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Filter</button>
                     <button id="clearFiltersBtn" type="button" class="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800">Clear Filters</button>
                     {% if showLoggedInRequiredItems %}<button id="saveSearchBtn" type="button" class="ml-3 font-medium text-blue-600 dark:text-blue-500 hover:underline">Save Search</button>{% endif %}
@@ -136,7 +142,7 @@
             </form>
         </div>
         {% if showLoggedInRequiredItems and savedSearches %}
-        <div class="border-t border-gray-300 p-4">
+        <div class="pt-4 md:pb-4">
             {% if savedSearches %}
                 <ul class="flex flex-wrap justify-center space-x-4">
                     {% for savedSearch in savedSearches %}
@@ -153,6 +159,11 @@
             {% endif %}
         </div>
         {% endif %}
+        <div class="flex items-center justify-center p-2">
+            <button data-collapse-toggle="filtersDiv" type="button" class="p-2 text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="filtersDiv" aria-expanded="false">
+                Toggle Filters
+            </button>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
@@ -162,6 +173,7 @@
             const regionRadio = document.querySelector('input[name="locationType"][value="region"]');
             const dropdownMenu = document.querySelector('.dropdown');
             const regionCheckboxes = document.querySelector('.region-checkboxes');
+            let numEntriesPerPage = 10;
         
             // Initialize with Neighborhood dropdown visible
             dropdownMenu.classList.remove('hidden');
@@ -241,7 +253,8 @@
                             }
             
                             return table;
-                        }
+                        },
+                        perPage:numEntriesPerPage,
                     });
                     // Hide the spinner once the DataTable is initialized
                     dataTable.on("datatable.init", () => {
@@ -270,9 +283,84 @@
                                 radioToSelect.checked = true;
                             }
                         }
+                        numEntriesPerPage = dataTable.options.perPage;
                     });
                 }
                 unhideTableAndExtras()
+            }
+
+            function isNumericAndBelow99999(str) {
+                // Check if the string is numeric using a regular expression
+                if (/^\d+$/.test(str)) {
+                    // Convert the string to a number and check if it's below 99999
+                    const num = Number(str);
+                    return num < 99999;
+                }
+                return false;
+            }
+
+            function cityRegionParamChecks(locations) {
+                // Get all checkboxes with the class 'regionCheckbox'
+                const regionCheckboxes = document.querySelectorAll('.regionCheckbox');
+                let returnValue = true;
+                // Loop through locations array
+                locations.forEach(location => {
+                    // Loop through each checkbox
+                    let foundMatch = false;
+                    regionCheckboxes.forEach(checkbox => {
+                        if (checkbox.getAttribute('data-region') === location) {
+                            checkbox.checked = true; // Check the checkbox if there's a match
+                            foundMatch = true;
+                        }
+                    });
+                    if (!foundMatch) {
+                        returnValue = false;
+                        return false
+                    }
+                });
+                return returnValue;
+            }
+
+            function unitTypesParamChecks(unitTypes) {
+                if (unitTypes) {
+                    unitTypes = JSON.parse(unitTypes)
+                    const unitTypeCheckboxesAll = document.querySelectorAll(".unitTypeCheckbox")
+                    unitTypes.forEach(unitType => {
+                        let foundMatch = false;
+                        // Loop through each checkbox
+                        unitTypeCheckboxesAll.forEach(checkbox => {
+                            if (checkbox.getAttribute('data-unit-type') === unitType) {
+                                checkbox.checked = true; // Check the checkbox if there's a match
+                                foundMatch = true;
+                            }
+                        });
+                        if (!foundMatch) {
+                            return false
+                        }
+                    });
+                }
+                return true;
+            }
+
+            function isSublist(mainList, sublist) {
+                return sublist.every(item => mainList.includes(item));
+            }            
+
+            function setChoiceSafely(locations) {
+                // Get all available choices
+                const decodedLocations = decodeURIComponent(locations).split(","); // Decode the URL-encoded string
+                const allChoices = neighborhoodSelect._presetChoices.map(choice => choice.value);
+                if (!(decodedLocations.length > allChoices.length)) {
+                    // Check if the value exists in the available choices
+                    if (isSublist(allChoices, decodedLocations)) {
+                        neighborhoodSelect.setChoiceByValue(locations);  // Set the choice if it exists
+                    } else {
+                        throw new Error(`Neighborhood(s) provided did not match those in the search dropdown options.`);
+                    }
+                } else {
+                    throw new Error(`Too many neighborhoods provided.`);
+                }
+                
             }
             
             // Function to get filters and send AJAX request
@@ -307,13 +395,23 @@
                     }
 
                     if (minPrice) {
-                        params.append('min_price', minPrice);
+                        if (isNumericAndBelow99999(minPrice)) {
+                            params.append('min_price', minPrice);
+                        } else {
+                            console.error('Error: invalid min price value.');
+                            params.delete('min_price')
+                        }
                     } else {
                         params.delete('min_price')
                     }
 
                     if (maxPrice) {
-                        params.append('max_price', maxPrice);
+                        if (isNumericAndBelow99999(maxPrice)) {
+                            params.append('max_price', maxPrice);
+                        } else {
+                            console.error('Error: invalid max price value.');
+                            params.delete('max_price')
+                        }
                     } else {
                         params.delete('max_price')
                     }
@@ -333,61 +431,69 @@
                     const maxPrice = params.get('max_price')
                     let unitTypes = params.get('unit_types')
                     let locations = params.get('locations')
-                    try {
-                        if (minPrice) {
+
+                    if (minPrice) {
+                        if (isNumericAndBelow99999(minPrice)) {
                             document.getElementById('minPriceInput').value = minPrice; 
-                        }
-                    } catch (error) {
-                        console.error('Error setting minPriceInput:', error);
-                        document.getElementById('minPriceInput').value = ""
-                        params.delete('minPrice')
+                        } else {
+                            console.error('Error: invalid min price value.');
+                            document.getElementById('minPriceInput').value = ""
+                            params.delete('min_price')
+                        }  
+                    }
+
+                    if (maxPrice) {
+                        if (isNumericAndBelow99999(maxPrice)) {
+                            document.getElementById('maxPriceInput').value = maxPrice; 
+                        } else {
+                            console.error('Error: invalid max price value.');
+                            document.getElementById('maxPriceInput').value = ""
+                            params.delete('max_price')
+                        }  
                     }
                     
-                    try {
-                        if (maxPrice) {
-                            document.getElementById('maxPriceInput').value = maxPrice;
-                        }
-                    } catch (error) {
-                        console.error('Error setting maxPriceInput:', error);
-                        params.delete('maxPrice')
-                    }
-                    if (unitTypes) {
-                        unitTypes = JSON.parse(unitTypes)
-                        const unitTypeCheckboxesAll = document.querySelectorAll(".unitTypeCheckbox")
-                        unitTypes.forEach(unitType => {
-                            // Loop through each checkbox
-                            unitTypeCheckboxesAll.forEach(checkbox => {
-                                if (checkbox.getAttribute('data-unit-type') === unitType) {
-                                    checkbox.checked = true; // Check the checkbox if there's a match
-                                }
-                            });
+                    if (!unitTypesParamChecks(unitTypes)) {
+                        console.error("Invalid unit type(s).")
+                        params.delete('unit_types')
+                        //uncheck all boxes
+                        document.querySelectorAll(".unitTypeCheckbox").forEach(checkbox => {
+                            checkbox.checked = false; // Check the checkbox if there's a match
                         });
                     }
+
                     if (locationFilterType) {
                         if (locationFilterType == "neighborhood") {
                             document.getElementById("locationTypeRadioNeighborhood").checked = true
                             if (locations) {
                                 locations = JSON.parse(locations)
-                                neighborhoodSelect.setChoiceByValue(locations); // Pass the entire array
+                                try {
+                                    setChoiceSafely(locations);  // Replace "SomeLocation" with the actual location value
+                                } catch (error) {
+                                    console.error(error.message);  // Handle the error as needed
+                                    params.delete('location_filter_type')
+                                    params.delete('locations')
+                                }
                             } 
                             checkNeighborhoodRadio()                           
                         } else if (locationFilterType == "region") {
                             document.getElementById("locationTypeRadioRegion").checked = true
                             if (locations) {
                                 locations = JSON.parse(locations)
-                                // Get all checkboxes with the class 'regionCheckbox'
-                                const regionCheckboxes = document.querySelectorAll('.regionCheckbox');
-                                // Loop through locations array
-                                locations.forEach(location => {
-                                    // Loop through each checkbox
-                                    regionCheckboxes.forEach(checkbox => {
-                                        if (checkbox.getAttribute('data-region') === location) {
-                                            checkbox.checked = true; // Check the checkbox if there's a match
-                                        }
+                                if (!cityRegionParamChecks(locations)) {
+                                    console.error("Invalid city region(s).")
+                                    params.delete('location_filter_type')
+                                    params.delete('locations')
+                                    document.querySelectorAll(".regionCheckbox").forEach(checkbox => {
+                                        checkbox.checked = false;
                                     });
-                                });
+
+                                }
                             }
                             checkRegionRadio()  
+                        } else {
+                            console.error("Invalid location type.")
+                            params.delete('location_filter_type')
+                            params.delete('locations')
                         }
                     }
                 }
@@ -487,7 +593,7 @@
                 launchSaveSearchModal();
             });
             //{% endif %}
-        
+            
             // Run filter on page load
             filterUnits(true);
             //{% if showLoggedInRequiredItems and savedSearches %}

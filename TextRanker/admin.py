@@ -24,6 +24,12 @@ class CustomUserAdmin(admin.ModelAdmin):
     # Ensure 'list_display' reflects the current model
     list_display = ('email', 'verified_account', 'is_active', 'account_banned', 'date_joined', 'last_login')
 
+    def save_model(self, request, obj, form, change):
+        # Check if the password is provided and is different from the existing password
+        if form.cleaned_data.get("password"):
+            obj.set_password(form.cleaned_data["password"])
+        super().save_model(request, obj, form, change)
+
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(DisposableEmailDomain)
 admin.site.register(Neighborhood)

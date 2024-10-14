@@ -2449,6 +2449,10 @@ input:checked + .toggle-bg {
   padding-top: 1rem;
 }
 
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
 .text-left {
   text-align: left;
 }
@@ -3401,6 +3405,15 @@ input:checked + .toggle-bg {
     border-width: 0px;
   }
 
+  .md\:border-t {
+    border-top-width: 1px;
+  }
+
+  .md\:border-gray-300 {
+    --tw-border-opacity: 1;
+    border-color: rgb(209 213 219 / var(--tw-border-opacity));
+  }
+
   .md\:bg-white {
     --tw-bg-opacity: 1;
     background-color: rgb(255 255 255 / var(--tw-bg-opacity));
@@ -3417,6 +3430,10 @@ input:checked + .toggle-bg {
 
   .md\:pt-20 {
     padding-top: 5rem;
+  }
+
+  .md\:pb-4 {
+    padding-bottom: 1rem;
   }
 
   .md\:text-5xl {

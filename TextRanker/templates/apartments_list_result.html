@@ -105,7 +105,7 @@
             <td class="font-bold">{{unit.unitType}}</td>
             <td class="font-bold">{{unit.neighborhood}}</td>
             <td class="font-bold">${{ unit.price|floatformat:0|intcomma }}</td>
-            <td><a href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
+            <td><a target="_blank" rel="noopener noreferrer" href="{{unit.listing_link}}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline" aria-label="View listing for unit {{unit.id}}">{{unit.listing_link}}</a></td>
         </tr>
         {% endfor %}
     </tbody>
